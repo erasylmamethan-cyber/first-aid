@@ -445,11 +445,24 @@ const STAMPS = {};
 /* ---------- звук, метроном, таймер ---------- */
 let ctx = null, wake = null;
 function ensureAudio(){ try{ if(!ctx){ const AC = window.AudioContext || window.webkitAudioContext; if(AC) ctx = new AC(); } if(ctx && ctx.resume) ctx.resume(); }catch(e){} }
+// Громкий сигнал: две волны (прямоугольная + синус октавой выше) через компрессор — звучит максимально громко
+// при текущей громкости телефона. Саму громкость устройства браузер менять не может.
+let master = null;
+function out(){
+  if(master) return master;
+  const comp = ctx.createDynamicsCompressor();
+  comp.threshold.value = -30; comp.knee.value = 0; comp.ratio.value = 20; comp.attack.value = 0.001; comp.release.value = 0.08;
+  const g = ctx.createGain(); g.gain.value = 1.6;
+  comp.connect(g); g.connect(ctx.destination); master = comp; return master;
+}
 function tone(freq, dur, vib){
-  try{ if(ctx){ const o=ctx.createOscillator(), g=ctx.createGain(), t=ctx.currentTime; o.frequency.value=freq;
-    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.6,t+0.005); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t+dur+0.02);} }catch(e){}
-  try{ if(navigator.vibrate) navigator.vibrate(vib); }catch(e){}
+  try{ if(ctx){ const t=ctx.currentTime, d=Math.max(dur, 0.08), dest=out();
+    [['square',freq,0.9],['sine',freq*2,0.7]].forEach(([type,f,peak])=>{
+      const o=ctx.createOscillator(), g=ctx.createGain(); o.type=type; o.frequency.value=f;
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(peak,t+0.004); g.gain.setValueAtTime(peak,t+d*0.55); g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+      o.connect(g); g.connect(dest); o.start(t); o.stop(t+d+0.02);
+    }); } }catch(e){}
+  try{ if(navigator.vibrate) navigator.vibrate(Array.isArray(vib) ? vib : Math.max(vib, 50)); }catch(e){}
 }
 async function lockScreen(on){
   try{
@@ -484,7 +497,7 @@ function metroReset(){ metroStop(); M.count=0; M.phase='press'; M.startedAt=0; l
 function metroTick(){
   if(!M.running || M.phase!=='press') return;
   M.count++;
-  tone(M.count===1 ? 1320 : 880, 0.06, 35);
+  tone(M.count===1 ? 1500 : 1100, 0.08, 50);
   const el = document.getElementById('metroScene');
   if(el){ el.classList.add('hit'); setTimeout(()=>el.classList.remove('hit'),130); }
   paintMetro();
@@ -519,7 +532,7 @@ function paintMetro(){
   if(cd){
     n.textContent = M.cd; l.textContent = 'приготовьтесь';
     tx.innerHTML = METRO[FLOWS[S.flow].type].press;
-    h.textContent = 'Поставьте руки — старт через ' + M.cd;
+    h.innerHTML = 'Поставьте руки — старт через ' + M.cd + '<br><span style="font-size:14px">Громкость телефона — на максимум</span>';
   } else if(breath){
     n.textContent = '2'; l.textContent = 'вдоха · ' + Math.max(0, Math.ceil((M.breathEnd-Date.now())/1000)) + ' с';
     tx.innerHTML = METRO[FLOWS[S.flow].type].breath;

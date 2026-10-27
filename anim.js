@@ -77,6 +77,7 @@ const DEFS = `<defs>
 <marker id="fa-ah" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${K.mark}"/></marker>
 <marker id="fa-ahb" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${K.water}"/></marker>
 </defs>`;
+const defs2 = () => '';
 const svg = (body, label) => `<svg viewBox="0 0 320 170" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">${DEFS}<rect width="320" height="170" fill="${K.bg}"/>${body}</svg>`;
 const floor = (y=142) => `<rect x="0" y="${y}" width="320" height="${170-y}" fill="${K.floor}"/><line x1="0" y1="${y}" x2="320" y2="${y}" stroke="${K.floorL}" stroke-width="2"/>`;
 const target = (x, y, r=7) => `<g class="fa-target"><circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${K.mark}" stroke-width="2.4"/><circle cx="${x}" cy="${y}" r="2.4" fill="${K.mark}"/></g>`;
@@ -118,12 +119,16 @@ function forearm(x, y, rot=0, len=120, w=40, sleeve=K.rShirt){
     Ln(`M${-len+40},${-w/2-6} Q${-len+47},0 ${-len+40},${w/2+6}`, K.rShirtS, 1.4) +
     `</g>`;
 }
-// две кисти в замок сверху: основание нижней ладони на грудине, пальцы верхней — между пальцами нижней
-function interlocked(x, y, rot=0, s=1){
+// две кисти в замок сверху (как на видео): нижняя ладонь — основанием на грудине, пальцы прямые;
+// верхняя наложена на тыльную сторону нижней наискосок, её пальцы обхватывают нижнюю и уходят между её пальцами
+function interlocked(x, y, rot=0, s=1, o={}){
+  const ang = o.ang ?? -34;
   return `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})">` +
-    forearm(-6, 10, 6, 150, 36) + forearm(-10, -8, -5, 150, 38) +
-    dorsalHand(0, 4, 4, 1, {fy:[-15,-4,7,17], fl:[44,50,47,37]}) +
-    dorsalHand(-6, -4, -3, 1.04, {fy:[-9.5,1,11.5,21], fl:[34,38,36,28], fa:[2,4,6,10]}) +
+    forearm(-4, 2, 0, 150, 38, K.rShirtS) +
+    dorsalHand(0, 0, 0, 1, {fy:[-15,-4.5,6,15.5], fl:[44,50,47,37], fa:[-5,-1.5,2,6], g:'url(#gr)', g2:'url(#gr)'}) +
+    `<g opacity=".28">${Ln('M44,-12 C52,-10 56,-6 58,-2 M45,0 C52,2 56,5 58,9 M44,11 C50,13 54,16 56,19', '#5A3520', 4)}</g>` +
+    forearm(-2, 28, ang, 150, 36) +
+    dorsalHand(-2, 28, ang, 1.0, {fy:[-11,-0.5,10,19.5], fl:[33,37,35,27], fa:[16,19,22,26], noNails:true}) +
     `</g>`;
 }
 // кулак (большой палец внутрь) + обхватывающая кисть
@@ -265,13 +270,28 @@ S.airway = (o={}) => {
 
 S.look = (o={}) => {
   const baby = o.infant;
-  return svg(floor() + (baby ? babyLying() : lyingAdult({chestCls:'fa-rise'})) +
-    L('M104,92 L170,62', K.rShirt, 26) + headProfile(90, 80, 0.48, 60) +
-    `<path d="M92,92 L150,${baby?106:104}" stroke="${K.mark}" stroke-width="2" stroke-dasharray="4 4" class="fa-dash"/>` +
-    `<g transform="translate(276,54)"><circle r="30" fill="#fff" stroke="${K.line}" stroke-width="2"/>` +
-    `<circle r="24" fill="none" stroke="${K.mark}" stroke-width="5" stroke-dasharray="151" class="fa-ring10" transform="rotate(-90)"/>` +
-    `<text y="6" font-size="15" font-weight="900" fill="${K.line}" text-anchor="middle" font-family="system-ui,sans-serif">10 с</text></g>` +
-    T(196, 22, 'Грудь поднимается?', 13, K.line, 800), 'Смотрите на грудную клетку 10 секунд');
+  const ring = `<g transform="translate(284,40)"><circle r="27" fill="#fff" stroke="${K.line}" stroke-width="2"/>` +
+    `<circle r="21" fill="none" stroke="${K.mark}" stroke-width="5" stroke-dasharray="132" class="fa-ring10" transform="rotate(-90)"/>` +
+    `<text y="5" font-size="14" font-weight="900" fill="${K.line}" text-anchor="middle" font-family="system-ui,sans-serif">10 с</text></g>`;
+  if(baby) return svg(floor() + babyLying() +
+    `<g transform="translate(118,64) scale(-1,1)">${headProfile(0,0,0.5,-62)}</g>` + L('M126,50 L200,6', K.rShirt, 30) +
+    `<path d="M124,62 L200,${102}" stroke="${K.mark}" stroke-width="2" stroke-dasharray="4 4" class="fa-dash"/>` + ring +
+    T(206, 40, 'грудь и живот', 12, K.line, 800, 'end') + T(206, 56, 'поднимаются?', 12, K.mark, 900, 'end'), 'Смотрите на грудь и живот 10 секунд');
+  return svg(defs2() + floor(150) +
+    // крупно: голова пострадавшего лицом вверх и грудь
+    P('M120,108 C150,96 196,96 236,98 L320,100 L320,150 L118,150 Z', K.vShirt) + Ln('M150,100 C156,116 156,134 150,150', K.vShirtS, 1.2) +
+    `<path d="M100,112 C108,104 118,102 124,104 L126,150 L102,150 Z" fill="url(#gs)" ${st()}/>` +
+    headUp(66, 122, 1.3) +
+    // спасатель: лицо повёрнуто к груди пострадавшего, щека над его ртом, ухо слушает
+    L('M150,14 L240,-30', K.rShirt, 52) +
+    `<g transform="translate(118,40) scale(-1,1)">${headProfile(0,0,1.0,-58)}</g>` +
+    // линия взгляда вдоль грудной клетки
+    `<path d="M136,54 C176,72 214,88 250,98" fill="none" stroke="${K.mark}" stroke-width="2.2" stroke-dasharray="5 5" class="fa-dash"/>` +
+    `<g class="fa-blink"><path d="M244,90 l6,-10 l6,10" fill="none" stroke="${K.mark}" stroke-width="2.4" stroke-linecap="round"/></g>` +
+    // выдох изо рта к щеке
+    `<g class="fa-air">${Ln('M88,86 q-4,-6 0,-12 M96,84 q-4,-6 0,-12', K.water, 2)}</g>` + ring +
+    T(250, 78, 'смотрите, слушайте,', 11, K.line, 900, 'end') + T(250, 92, 'ощущайте щекой', 11, K.line, 900, 'end') +
+    T(258, 128, 'поднимается?', 12, K.mark, 900), 'Смотрите на грудь, слушайте и ощущайте дыхание 10 секунд');
 };
 
 S.phone = () => svg(
@@ -347,18 +367,27 @@ S.breath = (o={}) => {
 };
 
 S.recovery = () => svg(
-  `<rect width="320" height="170" fill="#DCE3EC"/>` +
-  L('M120,92 L120,40 L108,22', K.vShirtS, 13) + `<g transform="translate(106,18) rotate(-110) scale(.34)">${dorsalHand(0,0,0,1,{g:'url(#gs)', g2:'url(#gs2)'})}</g>` +
-  L('M206,100 L300,96', 'url(#gjeans)', 22) + P('M296,86 C306,84 312,90 312,96 C312,104 306,108 298,106 Z', K.shoe) +
-  P('M96,82 C104,74 124,72 144,74 L200,80 C214,84 218,96 214,110 C200,118 150,118 112,114 C96,110 90,96 96,82 Z', K.vShirt, 'fa-breathe') +
-  Ln('M140,78 C146,90 146,104 140,114', K.vShirtS, 1.2) +
-  L('M200,104 L232,140 L282,136', 'url(#gjeans)', 22) + P('M280,128 C292,126 298,132 298,138 C298,146 290,150 280,148 Z', K.shoe) +
-  `<g transform="translate(70,96) rotate(90)">${headProfile(0,0,0.62,0,{g:'url(#gs)', hair:K.hair})}</g>` +
-  L('M124,96 C112,110 96,118 84,118', K.vShirtS, 12) + `<g transform="translate(80,118) rotate(180) scale(.3)">${dorsalHand(0,0,0,1,{g:'url(#gs)', g2:'url(#gs2)'})}</g>` +
-  num(92, 18, 1) + T(104, 23, 'рука вперёд', 11, K.line, 800, 'start') +
-  num(28, 140, 2) + T(40, 145, 'кисть под щёку', 11, K.line, 800, 'start') +
-  num(222, 162, 3) + T(234, 166, 'колено согнуто', 11, K.line, 800, 'start') +
-  T(48, 72, 'рот вниз', 11, K.mark, 900), 'Положение на боку');
+  `<rect width="320" height="170" fill="#DCE3EC"/>` + T(312, 18, 'вид сверху', 11, K.soft, 800, 'end') +
+  // нижняя рука: под прямым углом к телу, ладонью вверх
+  L('M98,108 L86,146', K.vShirtS, 13) + L('M86,146 L52,150', '#EFC3A0', 10) +
+  `<g transform="translate(52,150) rotate(176) scale(.3)">${dorsalHand(0,0,0,1,{g:'url(#gs)', g2:'url(#gs2)'})}</g>` +
+  // нижняя нога: прямая
+  L('M198,102 L252,104 L298,102', '#46546B', 21) + P('M294,92 C304,90 312,95 312,102 C312,110 304,114 296,112 Z', K.shoe) +
+  // туловище на боку: спина сверху, грудь и живот снизу
+  P('M90,74 C112,64 150,64 186,70 C202,73 210,86 208,98 C206,110 196,116 182,116 C150,118 118,118 98,114 C86,110 82,96 84,86 C85,80 87,76 90,74 Z', K.vShirt, 'fa-breathe') +
+  Ln('M96,72 C130,66 166,66 198,74', K.vShirtS, 1.2) + Ln('M150,70 C154,84 154,102 148,116', K.vShirtS, 1) +
+  // верхняя нога: бедро вперёд под прямым углом, колено на полу — упор
+  L('M190,84 L212,140', '#4A5872', 24) + L('M212,140 L268,138', '#4A5872', 20) + P('M264,128 C276,126 284,131 284,138 C284,146 276,150 266,148 Z', K.shoe) +
+  `<circle cx="212" cy="140" r="5" fill="none" stroke="${K.mark}" stroke-width="2.2" class="fa-blink"/>` +
+  // верхняя рука: локоть вперёд, тыльная сторона кисти — под щекой
+  L('M108,80 L122,128', K.vShirtS, 13) + L('M122,128 L86,124', '#EFC3A0', 10) +
+  `<g transform="translate(88,124) rotate(196) scale(.32)">${dorsalHand(0,0,0,1,{g:'url(#gs)', g2:'url(#gs2)'})}</g>` +
+  // голова на боку, слегка запрокинута, лицо вниз-вперёд (рот к полу)
+  `<g>${headProfile(66, 98, 0.78, -102, {g:'url(#gs)', hair:K.hair})}</g>` +
+  arrow('M40,118 q-6,14 0,26', 'fa-blink') +
+  num(16, 30, 1) + T(30, 35, 'голова запрокинута', 11, K.line, 800, 'start') +
+  num(16, 160, 2) + T(30, 164, 'кисть под щекой', 11, K.line, 800, 'start') +
+  num(206, 160, 3) + T(220, 164, 'колено — упор', 11, K.line, 800, 'start'), 'Положение на боку: вид сверху');
 
 function victimForearm(){
   return P('M20,104 C20,94 28,92 36,92 L250,86 C262,86 270,92 270,100 C270,110 262,116 250,116 L36,118 C26,118 20,114 20,104 Z', 'url(#gs)') +
@@ -409,16 +438,26 @@ S.chokeSign = () => svg(floor() + standVictim(0, 'throat') +
   T(236, 116, 'Воду не давать!', 13, K.mark, 900), 'Человек подавился');
 
 S.backBlows = () => svg(floor() +
-  L('M214,56 L150,96 L114,96', K.rShirtS, 10) +
-  L('M150,96 L146,140', 'url(#gjeans)', 18) + L('M160,96 L166,140', 'url(#gjeans)', 18) +
-  L('M154,94 L102,70', K.vShirt, 34) + headProfile(80, 80, 0.48, -40, {g:'url(#gs)', hair:K.hair, open:true}) +
-  L('M110,76 L102,112', K.vShirtS, 10) +
-  Ln('M118,58 q8,-6 16,0 M132,64 q8,-6 16,0', K.vShirtS, 2) + target(128, 64, 8) +
-  L('M222,96 L218,140', K.rPants, 18) + L('M232,96 L238,140', K.rPants, 18) +
-  L('M226,96 L214,46', K.rShirt, 30) + headProfile(210, 28, 0.48, 10) +
-  `<g class="fa-strike" style="transform-origin:212px 50px">` + L('M212,50 L172,32', K.rShirtS, 11) + L('M172,32 L148,52', 'url(#gr)', 9) +
-  `<g transform="translate(144,56) rotate(140) scale(.3)">${dorsalHand(0,0,0,1)}</g></g>` +
-  T(62, 24, 'между лопатками', 12, K.mark, 900, 'start'), 'Удары между лопатками');
+  // поддерживающая рука спасателя — под грудью пострадавшего
+  L('M190,58 L150,96 L118,96', K.rShirtS, 10) +
+  // пострадавший наклонён вперёд, голова ниже груди
+  L('M152,98 L148,140', 'url(#gjeans)', 18) + L('M162,98 L168,140', 'url(#gjeans)', 18) +
+  P('M138,136 L156,136 L158,142 L136,142 Z', K.shoe) + P('M160,136 L178,136 L180,142 L158,142 Z', K.shoe) +
+  L('M157,98 L108,68', K.vShirt, 32) +
+  headProfile(90, 82, 0.44, -38, {g:'url(#gs)', hair:K.hair, open:true}) +
+  L('M114,74 L104,110', K.vShirtS, 10) + `<g transform="translate(104,112) rotate(100) scale(.24)">${dorsalHand(0,0,0,1,{g:'url(#gs)', g2:'url(#gs2)'})}</g>` +
+  `<g transform="translate(114,98) rotate(180) scale(.26)">${dorsalHand(0,0,0,1)}</g>` +
+  // лопатки и точка удара
+  Ln('M116,58 q7,-7 15,-2 M131,67 q7,-7 15,-2', K.vShirtS, 2) + target(129, 61, 8) +
+  // спасатель сзади и сбоку
+  L('M200,98 L196,140', K.rPants, 18) + L('M210,98 L216,140', K.rPants, 18) +
+  P('M186,136 L204,136 L206,142 L184,142 Z', K.shoe) + P('M208,136 L226,136 L228,142 L206,142 Z', K.shoe) +
+  L('M205,98 L196,46', K.rShirt, 30) + headProfile(190, 28, 0.44, 14) +
+  // бьющая рука: замах вверх-назад, удар вниз-вперёд основанием ладони
+  `<g class="fa-blow" style="transform-origin:198px 50px">` + L('M198,50 L166,42', K.rShirtS, 11) + L('M166,42 L140,58', 'url(#gr)', 9) +
+  `<g transform="translate(136,60) rotate(150) scale(.28)">${dorsalHand(0,0,0,1)}</g></g>` +
+  arrow('M168,18 q-26,8 -34,32', 'fa-blink') +
+  T(316, 74, 'основанием', 12, K.mark, 900, 'end') + T(316, 90, 'ладони между', 12, K.mark, 900, 'end') + T(316, 106, 'лопатками,', 12, K.mark, 900, 'end') + T(316, 122, 'сверху вниз', 11, K.line, 800, 'end'), 'Удары основанием ладони между лопатками');
 
 S.hug = () => svg(floor() + standVictim(18) +
   L('M172,96 L150,140', K.rPants, 18) + L('M182,96 L196,140', K.rPants, 18) +
@@ -447,7 +486,7 @@ S.infantBack = () => svg(floor(156) +
   `<g transform="translate(94,114) rotate(180)">${headUp(0,0,0.55,{baby:true})}</g>` +
   `<g transform="translate(80,124) rotate(-10) scale(.32)">${finger(0,-10,40,11,0)}${finger(0,6,44,11,6)}</g>` +
   target(150, 92, 7) +
-  `<g class="fa-strike" style="transform-origin:230px 20px">` + L('M262,6 L196,36', K.rShirtS, 11) +
+  `<g class="fa-blow" style="transform-origin:230px 20px">` + L('M262,6 L196,36', K.rShirtS, 11) +
   `<g transform="translate(190,44) rotate(150) scale(.34)">${dorsalHand(0,0,0,1)}</g></g>` +
   T(40, 32, 'голова ниже тела', 13, K.line, 800, 'start') + T(40, 50, 'держите челюсть', 11, K.line, 700, 'start'), 'Малыш лицом вниз на предплечье, удары между лопатками');
 
@@ -669,6 +708,7 @@ const css = `
 .fa-drop{animation:fa-drop 2.4s ease-in-out infinite}
 .fa-spin{animation:fa-spin 2.4s ease-in-out infinite}
 .fa-strike{animation:fa-strike 1s ease-in infinite}
+.fa-blow{animation:fa-blow 1.1s cubic-bezier(.5,0,.75,0) infinite}
 .fa-thrust{animation:fa-thrust 1.2s ease-in-out infinite}
 .fa-water{animation:fa-water .5s linear infinite}
 .fa-film{animation:fa-film 3s ease-in-out infinite}
@@ -694,6 +734,7 @@ const css = `
 @keyframes fa-wrap{0%{opacity:0}12%,80%{opacity:1}100%{opacity:0}}
 @keyframes fa-drop{0%{transform:translateY(-30px);opacity:0}40%,85%{transform:translateY(14px);opacity:1}100%{transform:translateY(14px);opacity:0}}
 @keyframes fa-spin{0%,10%{transform:rotate(0)}60%,90%{transform:rotate(360deg)}100%{transform:rotate(360deg)}}
+@keyframes fa-blow{0%,25%{transform:rotate(40deg)}52%{transform:rotate(0deg)}60%{transform:rotate(-2deg)}75%{transform:rotate(0deg)}100%{transform:rotate(40deg)}}
 @keyframes fa-strike{0%,40%{transform:rotate(-22deg)}70%{transform:rotate(4deg)}100%{transform:rotate(-22deg)}}
 @keyframes fa-thrust{0%,40%{transform:translate(0,0)}60%{transform:translate(0,-9px)}100%{transform:translate(0,0)}}
 @keyframes fa-water{to{stroke-dashoffset:-18}}
