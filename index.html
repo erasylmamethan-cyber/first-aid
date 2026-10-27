@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Первая помощь</title>
-<meta name="description" content="Пошаговая первая помощь: реанимация с метрономом, кровотечение, удушье, ожог, низкий сахар. Работает без интернета.">
+<meta name="description" content="Пошаговая первая помощь: без сознания и реанимация с метрономом, кровотечение, удушье, ожог, низкий сахар. Работает без интернета.">
 <meta name="theme-color" content="#C8102E">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="Первая помощь">
 <style>
 *{box-sizing:border-box}
-/* Layout: one-column phone app, max 460px, centered on desktop; huge tap targets for a reader in panic */
+/* Layout: one-column phone app, max 460px; every step fits one screen, no scrolling during an emergency */
 :root{
   --bg:#F5F6F8; --surface:#FFFFFF; --fg:#111827; --muted:#4B5563; --line:#E5E7EB;
   --accent:#C8102E; --accent-ink:#FFFFFF; --accent-soft:#FFF1F2; --accent-deep:#9F1239;
@@ -34,51 +34,51 @@
 
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;-webkit-tap-highlight-color:transparent;
-  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-left:max(14px, env(safe-area-inset-left, 0px));padding-right:max(14px, env(safe-area-inset-right, 0px));
   padding-top:env(safe-area-inset-top, 0px);padding-bottom:env(safe-area-inset-bottom, 0px)}
 [hidden]{display:none!important}
 #app{max-width:460px;margin:0 auto;height:100%;display:flex;flex-direction:column}
 button,a{font:inherit}
 :focus-visible{outline:3px solid var(--calm);outline-offset:2px}
-.top{display:flex;justify-content:space-between;align-items:center;padding-block:12px 4px;min-height:52px}
-.icon-btn{width:48px;height:48px;border-radius:24px;border:0;background:transparent;color:var(--fg);display:flex;align-items:center;justify-content:center;margin-left:-12px;cursor:pointer}
-.pill-103{border:0;background:var(--accent);color:var(--accent-ink);height:44px;padding:0 18px;border-radius:22px;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;cursor:pointer}
-.scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-block:8px 8px}
-.bottom{display:flex;flex-direction:column;gap:8px;padding-block:10px 16px}
-h1{margin:0;font-size:30px;font-weight:800;line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
+.top{display:flex;justify-content:space-between;align-items:center;padding-block:8px 2px;min-height:50px}
+.icon-btn{width:46px;height:46px;border-radius:23px;border:0;background:transparent;color:var(--fg);display:flex;align-items:center;justify-content:center;margin-left:-10px;cursor:pointer}
+.pill-103{border:0;background:var(--accent);color:var(--accent-ink);height:42px;padding:0 16px;border-radius:21px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;cursor:pointer}
+.scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-block:8px 6px}
+.bottom{display:flex;flex-direction:column;gap:8px;padding-block:6px 12px}
+h1{margin:0;font-size:26px;font-weight:800;line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
 h2{margin:0;font-size:20px;font-weight:700}
 p{margin:0}
-.lead{font-size:19px;line-height:1.45}
 .muted{color:var(--muted)}
-.big{min-height:68px;border-radius:22px;border:0;font-size:20px;font-weight:800;cursor:pointer;padding:0 20px;width:100%;display:flex;align-items:center;justify-content:center;text-decoration:none;text-align:center}
+.big{min-height:56px;border-radius:18px;border:0;font-size:18px;font-weight:800;cursor:pointer;padding:6px 18px;width:100%;display:flex;align-items:center;justify-content:center;text-decoration:none;text-align:center;line-height:1.2}
 .big.dark{background:var(--strong);color:var(--strong-ink)}
 .big.red{background:var(--accent);color:var(--accent-ink)}
 .big.light{background:var(--surface);color:var(--fg);border:2px solid var(--line)}
-.big.small{min-height:54px;font-size:17px}
-.link-btn{min-height:48px;border:0;background:transparent;color:var(--muted);font-size:16px;font-weight:600;cursor:pointer}
+.big.small{min-height:48px;font-size:16px}
+.row2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.link-btn{min-height:40px;border:0;background:transparent;color:var(--muted);font-size:15px;font-weight:600;cursor:pointer}
 
 /* steps */
-ol.do{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;counter-reset:d}
-ol.do li{counter-increment:d;display:flex;gap:12px;align-items:flex-start;font-size:18px;line-height:1.4}
-ol.do li::before{content:counter(d);flex-shrink:0;width:30px;height:30px;border-radius:15px;background:var(--strong);color:var(--strong-ink);font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:-1px}
+ol.do{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;counter-reset:d}
+ol.do li{counter-increment:d;display:flex;gap:10px;align-items:flex-start;font-size:17px;line-height:1.35}
+ol.do li::before{content:counter(d);flex-shrink:0;width:26px;height:26px;border-radius:13px;background:var(--strong);color:var(--strong-ink);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
 ol.do b{font-weight:800}
-.alert{background:var(--accent-soft);color:var(--fg);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;font-size:16px;line-height:1.45}
+.alert{background:var(--accent-soft);border-radius:16px;padding:10px 12px;display:flex;gap:10px;align-items:center;font-size:14.5px;line-height:1.35}
 .alert strong{color:var(--accent-deep)}
-.alert .small-btn{align-self:flex-start;background:var(--accent);color:var(--accent-ink);border:0}
-.note{background:var(--info-bg);color:var(--info-fg);border-radius:16px;padding:14px 16px;font-size:16px;line-height:1.45}
-.warn{background:var(--warn-bg);color:var(--warn-fg);border-radius:16px;padding:14px 16px;font-size:16px;line-height:1.45}
-.small-btn{min-height:44px;padding:0 16px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.alert .small-btn{flex-shrink:0;background:var(--accent);color:var(--accent-ink);border:0;padding:0 12px}
+.note{background:var(--info-bg);color:var(--info-fg);border-radius:14px;padding:10px 12px;font-size:15px;line-height:1.4}
+.warn{background:var(--warn-bg);color:var(--warn-fg);border-radius:14px;padding:10px 12px;font-size:15px;line-height:1.4}
+.small-btn{min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
 .progress{display:flex;gap:6px}
-.progress i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.progress i{flex:1;height:5px;border-radius:3px;background:var(--line)}
 .progress i.on{background:var(--accent)}
-.step-no{font-size:15px;font-weight:700;color:var(--accent-deep)}
+.step-no{font-size:14px;font-weight:700;color:var(--accent-deep)}
 
 /* home & list */
-.call-card{border:0;width:100%;background:var(--accent);color:var(--accent-ink);border-radius:26px;min-height:112px;padding:0 22px;display:flex;align-items:center;gap:18px;cursor:pointer;text-align:left}
-.call-card .ring{width:68px;height:68px;border-radius:34px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.call-card b{display:block;font-size:26px;font-weight:800}
+.call-card{border:0;width:100%;background:var(--accent);color:var(--accent-ink);border-radius:24px;min-height:96px;padding:0 20px;display:flex;align-items:center;gap:16px;cursor:pointer;text-align:left}
+.call-card .ring{width:60px;height:60px;border-radius:30px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.call-card b{display:block;font-size:24px;font-weight:800}
 .call-card span{font-size:15px;opacity:.92}
-.sit{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:22px;min-height:80px;padding:0 20px;display:flex;align-items:center;gap:16px;font-size:21px;font-weight:800;text-align:left;cursor:pointer}
+.sit{width:100%;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:20px;min-height:68px;padding:0 18px;display:flex;align-items:center;gap:14px;font-size:20px;font-weight:800;text-align:left;cursor:pointer}
 .sit.primary{background:var(--strong);color:var(--strong-ink);border-color:var(--strong)}
 .sit svg{flex-shrink:0;color:var(--accent)}
 .sit.primary svg{color:inherit}
@@ -90,40 +90,57 @@ ol.do b{font-weight:800}
 .tag.soon{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
 
 /* metronome */
-.metro{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;flex:1}
-.beat{width:210px;height:210px;border-radius:50%;background:#9F1239;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:transform 90ms ease-out, background 200ms}
+.metro{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;flex:1;min-height:0}
+.metro-text{width:100%;border-radius:16px;padding:12px 14px;font-size:17px;line-height:1.35;background:var(--surface);border:1px solid var(--line)}
+.metro-text.breath{background:var(--calm);color:#FFFFFF;border-color:var(--calm);font-size:19px;font-weight:700}
+.beat{width:min(190px, 27vh);height:min(190px, 27vh);border-radius:50%;background:#9F1239;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:transform 90ms ease-out, background 200ms;flex-shrink:0}
 .beat.run{background:#C8102E}
 .beat.breath{background:#1D4ED8}
-.beat.hit{transform:scale(1.1)}
-.beat b{font-size:60px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
-.beat span{font-size:16px;font-weight:600;opacity:.92}
-.metro-hint{font-size:18px;font-weight:700;line-height:1.35;color:var(--accent-deep)}
+.beat.hit{transform:scale(1.08)}
+.beat b{font-size:clamp(40px, 8vh, 58px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.beat span{font-size:15px;font-weight:600;opacity:.92}
+.metro-hint{font-size:17px;font-weight:700;line-height:1.3;color:var(--accent-deep)}
 .metro-hint.breath{color:var(--calm)}
 
 /* timer */
-.timer{background:var(--info-bg);color:var(--info-fg);border-radius:24px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.timer b{font-size:56px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.timer{background:var(--info-bg);color:var(--info-fg);border-radius:20px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.timer b{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.timer .small-btn{background:var(--strong);color:var(--strong-ink);border:0}
 
 /* call */
-.num-card{border:0;width:100%;background:var(--accent);color:var(--accent-ink);border-radius:24px;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;text-align:left}
-.num-card b{font-size:56px;font-weight:800;letter-spacing:-.02em;line-height:1}
-.num-row{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:20px;min-height:68px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;color:var(--fg);font-weight:600;cursor:pointer;text-align:left}
-.num-row b{font-size:28px;font-weight:800}
-ol.say{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
-ol.say li{display:flex;gap:12px;align-items:center;font-size:17px;line-height:1.4}
-ol.say li span{width:30px;height:30px;border-radius:15px;background:var(--strong);color:var(--strong-ink);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.loc{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px}
-.loc b{font-size:18px;font-variant-numeric:tabular-nums;user-select:all;word-break:break-word}
+.num-card{border:0;width:100%;background:var(--accent);color:var(--accent-ink);border-radius:22px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;text-align:left}
+.num-card b{font-size:50px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.num-row{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:18px;min-height:60px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;color:var(--fg);font-weight:600;cursor:pointer;text-align:left}
+.num-row b{font-size:26px;font-weight:800}
+ol.say{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ol.say li{display:flex;gap:12px;align-items:center;font-size:16px;line-height:1.35}
+ol.say li span{width:28px;height:28px;border-radius:14px;background:var(--strong);color:var(--strong-ink);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.loc{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.loc .addr{font-size:20px;font-weight:800;line-height:1.25;user-select:all}
+.loc .near{font-size:15px;line-height:1.4;color:var(--muted)}
 .loc .row{display:flex;gap:8px;flex-wrap:wrap}
-.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);margin-inline:calc(-1 * max(16px, env(safe-area-inset-left, 0px)));padding:6px 8px 10px;background:var(--surface)}
-.tabs button{border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;font-size:12px;font-weight:600;min-height:52px;cursor:pointer}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line);margin-inline:calc(-1 * max(14px, env(safe-area-inset-left, 0px)));padding:4px 8px 8px;background:var(--surface)}
+.tabs button{border:0;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;font-size:12px;font-weight:600;min-height:50px;cursor:pointer}
 .tabs button.on{color:var(--accent)}
 
 /* call confirmation sheet */
 .sheet-wrap{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:flex-end;justify-content:center;z-index:50}
-.sheet{width:100%;max-width:460px;background:var(--surface);border-radius:28px 28px 0 0;padding:24px max(20px, env(safe-area-inset-left, 0px)) calc(20px + env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:12px}
+.sheet{width:100%;max-width:460px;background:var(--surface);border-radius:28px 28px 0 0;padding:22px max(20px, env(safe-area-inset-left, 0px)) calc(20px + env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:12px}
 .sheet h2{font-size:24px;font-weight:800}
 .sheet .num{font-size:44px;font-weight:800;color:var(--accent);line-height:1}
+@media (max-height: 700px){
+  h1{font-size:22px}
+  .scroll{gap:8px;padding-block:6px 4px}
+  ol.do{gap:6px}
+  ol.do li{font-size:15.5px;line-height:1.3}
+  ol.do li::before{width:23px;height:23px;font-size:13px}
+  .alert{font-size:13.5px;padding:8px 10px}
+  .note,.warn{font-size:14px;padding:8px 10px}
+  .big{min-height:50px;font-size:17px}
+  .big.small{min-height:44px;font-size:15px}
+  .top{min-height:46px;padding-block:6px 0}
+  .link-btn{min-height:36px}
+}
 @media (prefers-reduced-motion: reduce){.beat{transition:none}.beat.hit{transform:none}}
 </style>
 </head>
@@ -143,11 +160,11 @@ ol.say li span{width:30px;height:30px;border-radius:15px;background:var(--strong
 (function(){
 const I = {
   phone:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
-  heart:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/><path d="M3.2 12H8l1.5-3 3 6 1.5-3h6.8"/></svg>',
-  drop:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.7C9 7 6 10.3 6 14a6 6 0 0 0 12 0c0-3.7-3-7-6-11.3z"/></svg>',
-  choke:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M9 13v3h6v-3"/><path d="M8 20h8"/></svg>',
-  fire:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-10-1 2-2 3-3 3 0-2-1-4-3-6 0 4-4 7-4 13 0 4 3 7 7 7z"/></svg>',
-  sugar:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M15 9h.01M12 12h.01M9 15h.01M15 15h.01"/></svg>',
+  person:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="9" r="2.5"/><path d="M10 12h10a2 2 0 0 1 2 2v3H3v-3a2 2 0 0 1 2-2h1"/><path d="M3 17v2M22 17v2"/></svg>',
+  drop:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.7C9 7 6 10.3 6 14a6 6 0 0 0 12 0c0-3.7-3-7-6-11.3z"/></svg>',
+  choke:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M9 13v3h6v-3"/><path d="M8 20h8"/></svg>',
+  fire:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-10-1 2-2 3-3 3 0-2-1-4-3-6 0 4-4 7-4 13 0 4 3 7 7 7z"/></svg>',
+  sugar:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M15 9h.01M12 12h.01M9 15h.01M15 15h.01"/></svg>',
   close:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
   back:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>',
   chev:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>',
@@ -155,91 +172,95 @@ const I = {
   list:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>'
 };
 
-/* Каждый шаг — указание. list = пункты для быстрого чтения, ключевые слова в <b>.
+/* Каждый шаг — указание, коротко, без прокрутки. Ключевые слова в <b>.
    go: 'next' | число (индекс шага) | 'done:<id>' | 'call' (подтверждение звонка) | 'flow:<id>:<шаг>' */
 const FLOWS = {
-  cpr: { name:'Не дышит', steps:[
+  cpr: { name:'Без сознания', steps:[
     { title:'Убедитесь, что вам ничего не угрожает',
-      body:'Дорога, огонь, ток, газ, обрушение — сначала уберите опасность или отойдите. Помогать можно только в безопасном месте.',
+      list:['Дорога, огонь, ток, газ, обрушение — <b>сначала уберите опасность</b> или отойдите.','Помогать можно только там, где <b>безопасно вам</b>.'],
       btns:[{label:'Безопасно — дальше', go:'next'}] },
     { title:'Проверьте сознание и дыхание',
-      list:['Громко окликните и <b>потрясите за плечи</b>.','Нет ответа — <b>запрокиньте голову</b> и поднимите подбородок.','<b>10 секунд</b> смотрите, слушайте и ощущайте дыхание.'],
-      note:'Редкие хрипящие вдохи — это <b>не дыхание</b>. Сомневаетесь — считайте, что человек не дышит.',
-      btns:[{label:'Не дышит или дышит ненормально', go:'next', style:'red'}, {label:'Дышит нормально', go:'done:breathing', style:'light'}] },
+      list:['Громко окликните, <b>потрясите за плечи</b>.','Нет ответа — <b>запрокиньте голову</b>, поднимите подбородок.','<b>10 секунд смотрите на грудную клетку</b>: поднимается или нет? Слушайте и ощущайте дыхание щекой.'],
+      note:'Редкие хрипящие вдохи — это <b>не дыхание</b>. Пульс искать не нужно: нет нормального дыхания — значит, сердце остановилось.',
+      btns:[{label:'Не дышит или хрипит', go:'next', style:'red'}, {label:'Дышит нормально', go:'done:breathing', style:'light'}] },
     { title:'Позвоните 103 и найдите дефибриллятор',
-      list:['Позвоните <b>103</b>, включите громкую связь, положите телефон рядом.','Пусть кто-нибудь принесёт <b>дефибриллятор (АНД)</b>, если он есть поблизости, — он сам подскажет, что делать.'],
+      list:['Позвоните <b>103</b>, включите громкую связь, положите телефон рядом.','Пусть кто-нибудь <b>принесёт дефибриллятор</b> (АНД), если он есть рядом. Он сам говорит, что делать.','Положите человека <b>на спину, на твёрдое</b>.'],
       btns:[{label:'Начать реанимацию', go:'next', style:'red'}, {label:'Позвонить 103', go:'call', style:'light'}] },
     { kind:'metro' }
   ]},
   bleed: { name:'Сильно кровоточит', steps:[
     { title:'Сразу прижмите рану',
-      list:['Если есть — наденьте <b>перчатки</b> или пакет на руку.','Положите на рану <b>сложенный бинт</b>, салфетку или чистую ткань.','<b>Давите ладонью сильно</b>, всем весом.','Держите <b>не меньше 10 минут</b>. Не поднимайте ткань, чтобы посмотреть.'],
-      warn:'В ране торчит предмет — <b>не вынимайте</b>. Давите по бокам от него.',
-      btns:[{label:'Прижал(а) — дальше', go:'next'}] },
+      list:['Положите на рану <b>сложенную ткань</b>: бинт, футболку, шарф.','<b>Давите ладонью сильно</b>, всем весом.','Держите <b>не меньше 10 минут</b>, не подглядывайте.'],
+      warn:'Рана на <b>шее, груди или животе</b> — только давите, <b>перетягивать нельзя</b>. Торчит предмет — не вынимайте, давите по бокам.',
+      btns:[{label:'Прижал(а) — дальше', go:'next'}, {label:'Нет бинта или ткани', go:'done:cloth', style:'light', small:true}] },
     { title:'Наложите давящую повязку',
-      list:['Ткань с раны <b>не убирайте</b>.','Сверху положите <b>плотный валик</b> — нераспечатанный бинт или свёрнутую ткань.','<b>Туго прибинтуйте</b>: каждый виток закрывает предыдущий наполовину.','Узел завяжите <b>сбоку</b>, не на самой ране.','Проверьте пальцы ниже повязки: <b>синеют или немеют</b> — чуть ослабьте.'],
+      list:['Ткань с раны <b>не убирайте</b>.','Сверху — <b>плотный валик</b>: нераспечатанный бинт или свёрнутая ткань.','<b>Туго прибинтуйте</b>, витки внахлёст.','Узел — <b>сбоку</b>, не на ране.','Пальцы ниже <b>синеют или немеют</b> — чуть ослабьте.'],
       btns:[{label:'Кровь остановилась', go:'done:bleed'}, {label:'Повязка промокла', go:'next', style:'light'}] },
     { title:'Повязка промокла',
-      list:['Старую повязку <b>не снимайте</b>.','Положите сверху <b>ещё ткань</b> и снова туго прибинтуйте.','Снова <b>сильно давите</b> рукой поверх.'],
-      warn:'Рана на <b>шее, груди или животе</b> — жгут не накладывают. Только давите до приезда скорой.',
-      btns:[{label:'Кровь остановилась', go:'done:bleed'}, {label:'Рука или нога — кровь не останавливается', go:'next', style:'red'}] },
-    { title:'Наложите жгут',
-      list:['Только на <b>руку или ногу</b>, если давление не помогло.','Место — <b>на 5–7 см выше раны</b>, не на сустав. Лучше на кожу, можно поверх тонкой одежды.','Жгут или <b>широкая полоса ткани</b> (шире 4 см). Не верёвка и не провод.','<b>Затягивайте, пока кровь не остановится.</b> Закрутите палкой или ручкой, если не хватает сил.','Не держит — второй жгут <b>выше первого</b>.','<b>Запишите время</b> на коже или на жгуте.'],
-      warn:'<b>Не ослабляйте и не снимайте жгут сами</b> — это сделают врачи.',
-      btns:[{label:'Жгут наложен', go:'done:tourniquet'}] }
+      list:['Старую повязку <b>не снимайте</b>.','Сверху — <b>ещё ткань</b>, снова туго прибинтуйте.','Снова <b>сильно давите</b> рукой.'],
+      btns:[{label:'Кровь остановилась', go:'done:bleed'}, {label:'Рука или нога: кровь не останавливается', go:'next', style:'red'}] },
+    { title:'Перетяните руку или ногу выше раны',
+      list:['<b>Это не повязка.</b> Жгут — тугая перетяжка, которая пережимает всю конечность.','Место — <b>на 5–7 см выше раны</b>, не на сустав.','Жгут, <b>ремень или полоса ткани</b> шириной от 4 см. Не верёвка и не провод.','Завяжите, вставьте <b>палку или ручку</b> и закручивайте, <b>пока кровь не остановится</b>.','<b>Запишите время</b> на коже или на жгуте.'],
+      warn:'<b>Не ослабляйте и не снимайте</b> — это сделают врачи.',
+      btns:[{label:'Перетянул(а)', go:'done:tourniquet'}] }
   ]},
   choke: { name:'Подавился', steps:[
     { title:'Спросите: «Вы подавились?»',
-      list:['<b>Кашляет</b> — пусть кашляет. По спине не стучите, будьте рядом.','<b>Не может говорить, кашлять или дышать</b>, хватается за горло — действуйте сразу.'],
+      list:['<b>Кашляет</b> — пусть кашляет, по спине не стучите.','<b>Не может говорить, кашлять, дышать</b>, хватается за горло — действуйте сразу.'],
       btns:[{label:'Не может дышать', go:'next', style:'red'}, {label:'Кашляет', go:'done:cough', style:'light'}] },
     { title:'5 ударов по спине',
-      list:['Встаньте <b>сбоку и чуть сзади</b>.','Одной рукой <b>поддержите грудь</b> и наклоните человека вперёд — голова ниже груди.','Основанием <b>другой ладони</b> резко ударьте <b>между лопатками</b>.','До <b>5 ударов</b>. После каждого смотрите — вышел ли предмет.'],
-      btns:[{label:'Не помогло', go:'next', style:'red'}, {label:'Предмет вышел', go:'done:choke', style:'light'}] },
+      list:['Встаньте <b>сбоку и чуть сзади</b>.','Рукой поддержите грудь, <b>наклоните вперёд</b>.','Основанием ладони резко бейте <b>между лопатками</b>.','До <b>5 ударов</b>, после каждого смотрите — вышло ли.'],
+      btns:[{label:'Не помогло', go:'next', style:'red'}, {label:'Вышло', go:'done:choke', style:'light'}], pair:true },
+    { title:'Встаньте сзади и обхватите',
+      list:['Встаньте <b>сзади</b>, одну ногу — чуть вперёд для упора.','Обхватите руками <b>на уровне пояса</b>.','Слегка <b>наклоните человека вперёд</b>.'],
+      warn:'<b>Беременная</b> или не обхватить — толчки не в живот, а в <b>нижнюю часть грудины</b>. <b>Ребёнок до 1 года</b> — так нельзя.',
+      btns:[{label:'Обхватил(а) — дальше', go:'next'}] },
     { title:'5 толчков в живот',
-      list:['Встаньте <b>сзади</b>, одну ногу поставьте чуть вперёд для упора.','Обхватите человека руками на уровне пояса, <b>слегка наклоните вперёд</b>.','Сожмите кулак. Положите его <b>чуть выше пупка, ниже рёбер</b>, стороной большого пальца к животу.','<b>Обхватите кулак</b> второй рукой.','Резко дёрните <b>на себя и вверх</b>, будто поднимаете человека.','До <b>5 толчков</b>. После каждого смотрите — вышел ли предмет.'],
-      warn:'<b>Беременным</b> и тем, кого не обхватить, толчки в живот не делают — давите резко на <b>нижнюю часть грудины</b>.<br><b>Детям до 1 года</b> эта техника не подходит.',
-      btns:[{label:'Не помогло — снова 5 ударов', go:1}, {label:'Предмет вышел', go:'done:choke', style:'light'}, {label:'Потерял сознание', go:'done:choke-unconscious', style:'red'}] }
+      list:['Кулак — <b>чуть выше пупка</b>, ниже рёбер.','<b>Обхватите кулак</b> второй рукой.','Резко дёрните <b>на себя и вверх</b>.','До <b>5 раз</b>, после каждого смотрите — вышло ли.'],
+      btns:[{label:'Не помогло — снова удары по спине', go:1}, {label:'Вышло', go:'done:choke', style:'light'}, {label:'Потерял сознание', go:'done:choke-unconscious', style:'red'}], pairLast:true }
   ]},
   burn: { name:'Ожог', steps:[
     { kind:'timer', minutes:20, title:'Охлаждайте водой 20 минут',
-      list:['<b>Прохладная проточная вода</b>, не ледяная.','Пока нет отёка — <b>снимите кольца, часы</b>, тесную одежду.','Прилипшую к коже одежду <b>не отрывайте</b>.'],
+      list:['<b>Прохладная проточная вода</b>, не ледяная.','Пока нет отёка — <b>снимите кольца, часы</b>.','Прилипшую одежду <b>не отрывайте</b>.'],
       btns:[{label:'Дальше', go:'next'}] },
     { title:'Закройте ожог',
       list:['<b>Пищевой плёнкой</b> или чистой тканью без ворса.','Не туго, без давления.'],
       warn:'<b>Нельзя:</b> масло, кремы, сметану, лёд. Пузыри <b>не вскрывайте</b>.',
       btns:[{label:'Дальше', go:'next'}] },
     { title:'Когда обязательно звонить 103',
-      list:['Ожог <b>больше ладони</b> пострадавшего.','На <b>лице, шее, кистях, стопах</b> или в паху.','От <b>тока или химии</b>.','У <b>ребёнка</b> или пожилого человека.','Кожа <b>белая, обугленная</b> или не болит.'],
+      list:['Ожог <b>больше ладони</b> пострадавшего.','На <b>лице, шее, кистях, стопах</b>, в паху.','От <b>тока или химии</b>.','У <b>ребёнка</b> или пожилого.','Кожа <b>белая, обугленная</b> или не болит.'],
       btns:[{label:'Позвонить 103', go:'call', style:'red'}, {label:'Ничего из этого', go:'done:burn', style:'light'}] }
   ]},
   diab: { name:'Диабетику плохо', steps:[
-    { title:'Проверьте: человек в сознании и может глотать?',
-      list:['Признаки <b>низкого сахара</b>: бледность, пот, дрожь, голод, спутанность, странное поведение «как у пьяного».','Спросите, есть ли у него <b>диабет</b>, глюкометр или таблетки глюкозы.'],
-      btns:[{label:'Да, в сознании', go:'next'}, {label:'Без сознания или не может глотать', go:3, style:'red'}] },
+    { title:'Проверьте сознание и признаки диабета',
+      list:['Низкий сахар: <b>бледность, пот, дрожь</b>, спутанность, ведёт себя «как пьяный».','Ищите знак: <b>браслет или кулон</b> с надписью «диабет».','Проверьте карманы и сумку: <b>шприц-ручка, глюкометр</b>, таблетки глюкозы.'],
+      btns:[{label:'В сознании, может глотать', go:'next'}, {label:'Без сознания или не глотает', go:3, style:'red'}] },
     { title:'Дайте быстрый сахар',
-      list:['<b>Стакан сладкого сока</b> или обычной (не диетической) газировки — 150–200 мл,','или <b>4–5 кусочков сахара</b>,','или <b>столовую ложку сахара или мёда</b>, растворённую в воде,','или <b>3–4 таблетки глюкозы</b>.'],
-      note:'Не знаете, сахар низкий или высокий, — <b>всё равно дайте сладкое</b>. Это не навредит.',
+      list:['<b>Стакан сладкого сока</b> или обычной газировки (не «зеро»),','или <b>4–5 кусочков сахара</b>,','или <b>ложку сахара или мёда</b> в воде,','или <b>3–4 таблетки глюкозы</b>.'],
+      note:'Не знаете, сахар низкий или высокий, — <b>всё равно дайте сладкое</b>.',
       btns:[{label:'Дал(а) — дальше', go:'next'}] },
     { kind:'timer', minutes:15, title:'Подождите 15 минут',
-      list:['Посадите человека, <b>не оставляйте одного</b>.','<b>Стало лучше</b> — дайте поесть: хлеб, печенье, бутерброд.','<b>Не стало лучше</b> — дайте сладкое ещё раз.'],
-      btns:[{label:'Стало лучше', go:'done:diab'}, {label:'Не лучше или хуже', go:'call', style:'red'}] },
+      list:['Посадите, <b>не оставляйте одного</b>.','<b>Лучше</b> — дайте поесть: хлеб, печенье.','<b>Не лучше</b> — дайте сладкое ещё раз.'],
+      btns:[{label:'Стало лучше', go:'done:diab'}, {label:'Не лучше или хуже', go:'call', style:'red'}], pair:true },
     { title:'Ничего не давайте в рот',
-      list:['Ни еды, ни питья, ни таблеток — <b>может захлебнуться</b>.','<b>Позвоните 103</b>.','Дышит — <b>положите на бок</b>, следите за дыханием.','<b>Не дышит</b> — начинайте реанимацию.'],
+      list:['Ни еды, ни питья — <b>может захлебнуться</b>.','<b>Не вводите инсулин</b> — сахар упадёт ещё сильнее.','<b>Звоните 103</b>, скажите, что у человека диабет.','Дышит — <b>положите на бок</b>.'],
       btns:[{label:'Не дышит — реанимация', go:'flow:cpr:2', style:'red'}, {label:'Позвонить 103', go:'call', style:'light'}] }
   ]}
 };
 const DONE = {
-  breathing:{ title:'Положите на бок', list:['Позвоните <b>103</b>.','Поверните человека <b>на бок</b>, верхнюю ногу согните в колене для упора.','Голову слегка запрокиньте, чтобы рот был направлен вниз.','<b>Проверяйте дыхание</b> до приезда скорой. Перестал дышать — начинайте реанимацию.'], btns:[{label:'Перестал дышать', go:'flow:cpr:2', style:'red'}] },
-  bleed:{ title:'Держите и ждите скорую', list:['Повязку <b>не снимайте</b>.','Уложите человека, <b>укройте</b>, чтобы не замёрз.','Побледнел, слабеет, кожа холодная — <b>поднимите ноги</b> и сообщите диспетчеру.'] },
-  tourniquet:{ title:'Жгут наложен', list:['<b>Время наложения</b> записано — назовите его врачам.','Жгут <b>не ослабляйте и не снимайте</b>.','Укройте человека и ждите скорую.'] },
-  cough:{ title:'Пусть кашляет', list:['По спине <b>не стучите</b>, пока человек кашляет.','Будьте рядом.','<b>Перестал кашлять</b> и не может дышать — сразу переходите к ударам по спине.'], btns:[{label:'Перестал кашлять', go:'flow:choke:1', style:'red'}] },
-  choke:{ title:'Дыхание восстановилось', list:['После толчков в живот <b>обязательно покажите человека врачу</b> — бывают внутренние травмы.'] },
-  'choke-unconscious':{ title:'Опустите на пол и начинайте реанимацию', list:['Аккуратно <b>опустите на спину</b>.','<b>Позвоните 103.</b>','Загляните в рот: предмет <b>видно</b> — достаньте пальцем. <b>Не видно — пальцем не лезьте</b>.','Начинайте <b>реанимацию 30 : 2</b>.'], btns:[{label:'Начать реанимацию', go:'flow:cpr:3', style:'red'}] },
-  burn:{ title:'Ожог закрыт', list:['Появились <b>сильная боль, жар, гной</b> или ожог не заживает — обратитесь к врачу.'] },
-  diab:{ title:'Стало лучше', list:['Дайте <b>поесть</b>, если ещё не ели.','<b>Не оставляйте одного</b> ближайший час.','Снова стало плохо — повторите сладкое и <b>позвоните 103</b>.'] }
+  breathing:{ title:'Положите на бок', list:['Позвоните <b>103</b>.','Поверните <b>на бок</b>, верхнюю ногу согните в колене для упора.','Голову слегка запрокиньте, <b>рот — вниз</b>.','<b>Смотрите на грудную клетку</b> до приезда скорой. Перестал дышать — реанимация.'], btns:[{label:'Перестал дышать', go:'flow:cpr:2', style:'red'}] },
+  woke:{ title:'Человек пришёл в себя', list:['<b>Остановите нажатия.</b>','Дышит, но не отвечает — <b>положите на бок</b>.','Очнулся — <b>не давайте вставать</b>, есть и пить. Укройте, говорите с ним.','<b>Смотрите на грудную клетку</b>. Перестал дышать — снова реанимация.','Скажите врачам, <b>сколько минут</b> длилась реанимация.'], btns:[{label:'Перестал дышать — снова нажимать', go:'flow:cpr:3', style:'red'}] },
+  cloth:{ title:'Нечем закрыть рану', list:['Подойдёт <b>любая ткань</b>: футболка, рубашка, шарф, полотенце, платок.','Нечем резать — <b>рвите по шву</b> или от края. Надорвите край <b>зубами или ключом</b>.','Не тратьте время: можно <b>свернуть вещь целиком</b>.','Чистота сейчас вторична. Берите <b>внутреннюю сторону</b> одежды — она чище.','Совсем ничего — <b>давите ладонью</b> прямо на рану.'], btns:[{label:'Вернуться к ране', go:'back'}] },
+  bleed:{ title:'Держите и ждите скорую', list:['Повязку <b>не снимайте</b>.','Уложите, <b>укройте</b>, чтобы не замёрз.','Побледнел, слабеет, кожа холодная — <b>поднимите ноги</b>, скажите диспетчеру.'] },
+  tourniquet:{ title:'Конечность перетянута', list:['Назовите врачам <b>время</b>, когда перетянули.','Жгут <b>не ослабляйте и не снимайте</b>.','Укройте человека и ждите скорую.'] },
+  cough:{ title:'Пусть кашляет', list:['По спине <b>не стучите</b>, пока кашляет.','Будьте рядом.','<b>Перестал кашлять</b> и не дышит — сразу удары по спине.'], btns:[{label:'Перестал кашлять', go:'flow:choke:1', style:'red'}] },
+  choke:{ title:'Дыхание восстановилось', list:['После толчков в живот <b>обязательно покажите врачу</b> — бывают внутренние травмы.'] },
+  'choke-unconscious':{ title:'Опустите на пол — реанимация', list:['Аккуратно <b>опустите на спину</b>.','<b>Позвоните 103.</b>','Загляните в рот: предмет <b>видно</b> — достаньте. <b>Не видно — пальцем не лезьте</b>.','Начинайте <b>реанимацию 30 : 2</b>.'], btns:[{label:'Начать реанимацию', go:'flow:cpr:3', style:'red'}] },
+  burn:{ title:'Ожог закрыт', list:['<b>Сильная боль, жар, гной</b> или ожог не заживает — к врачу.'] },
+  diab:{ title:'Стало лучше', list:['Дайте <b>поесть</b>, если ещё не ел.','<b>Не оставляйте одного</b> ближайший час.','Снова плохо — сладкое и <b>звоните 103</b>.'] }
 };
 const LIST = [
-  { t:'Не дышит, нет сознания', s:'Реанимация с метрономом 30 : 2', flow:'cpr', urgent:true },
+  { t:'Без сознания', s:'Не дышит, остановка сердца — реанимация', flow:'cpr', urgent:true },
   { t:'Сильно кровоточит', s:'Давление, давящая повязка, жгут', flow:'bleed', urgent:true },
   { t:'Подавился', s:'Удары по спине, толчки в живот', flow:'choke', urgent:true },
   { t:'Диабетику плохо', s:'Низкий сахар: слабость, пот, спутанность', flow:'diab', urgent:true },
@@ -250,7 +271,7 @@ const LIST = [
   { t:'Перелом', s:'Деформация, сильная боль, отёк' },
   { t:'Ребёнок до 1 года подавился', s:'Другая техника, чем у взрослых' }
 ];
-const HELP_ALERT = '<div class="alert"><span><strong>Сначала позвоните 103</strong> или попросите кого-то позвонить. Громко позовите на помощь: если рядом есть <strong>врач или человек с медподготовкой</strong> — пусть помогает.</span><button class="small-btn" data-a="call">'+I.phone.replace(/24/g,'18')+'Позвонить 103</button></div>';
+const HELP_ALERT = '<div class="alert"><span><strong>Звоните 103 и громко кричите «Помогите!»</strong> — вдруг рядом врач. Не стесняйтесь: промедление может стоить жизни.</span><button class="small-btn" data-a="call" aria-label="Позвонить 103">'+I.phone.replace(/24/g,'18')+'103</button></div>';
 
 const S = { screen:'home', flow:null, step:0, done:null, hist:[] };
 const app = document.getElementById('app');
@@ -270,26 +291,26 @@ async function lockScreen(on){
     if(!on && wake){ await wake.release(); wake=null; }
   }catch(e){ wake=null; }
 }
-// 110 в минуту; 30 нажатий : 2 вдоха, либо только нажатия
-const M = { running:false, count:0, total:0, phase:'press', onlyComp:false, timer:null, tick2:null, nextAt:0, breathEnd:0, bpm:110 };
+// 110 в минуту, 30 нажатий : 2 вдоха
+const M = { running:false, count:0, phase:'press', timer:null, tick2:null, nextAt:0, breathEnd:0, bpm:110, startedAt:0 };
 function metroStart(){
   ensureAudio(); lockScreen(true);
   clearTimeout(M.timer); clearInterval(M.tick2);
+  if(!M.startedAt) M.startedAt = Date.now();
   M.running = true; M.phase = 'press'; M.nextAt = Date.now(); metroTick(); paintMetro();
 }
-function metroStop(){ clearTimeout(M.timer); clearInterval(M.tick2); M.running=false; paintMetro(); }
-function metroReset(){ metroStop(); M.count=0; M.total=0; M.phase='press'; lockScreen(false); }
+function metroStop(){ clearTimeout(M.timer); clearInterval(M.tick2); M.running=false; if(M.phase==='breath') M.phase='press'; paintMetro(); }
+function metroReset(){ metroStop(); M.count=0; M.phase='press'; M.startedAt=0; lockScreen(false); }
 function metroTick(){
   if(!M.running || M.phase!=='press') return;
-  M.count++; M.total++;
-  tone(M.count===1 && !M.onlyComp ? 1320 : 880, 0.06, 35);
+  M.count++;
+  tone(M.count===1 ? 1320 : 880, 0.06, 35);
   const el = document.getElementById('beat');
   if(el){ el.classList.add('hit'); setTimeout(()=>el.classList.remove('hit'),110); }
   paintMetro();
   M.nextAt += 60000/M.bpm;
   const wait = Math.max(0, M.nextAt - Date.now());
-  if(!M.onlyComp && M.count>=30) M.timer = setTimeout(breathStart, wait);
-  else M.timer = setTimeout(metroTick, wait);
+  M.timer = setTimeout(M.count>=30 ? breathStart : metroTick, wait);
 }
 function breathStart(){
   if(!M.running) return;
@@ -308,23 +329,21 @@ function paintMetro(){
   const breath = M.phase==='breath';
   el.classList.toggle('run', M.running && !breath);
   el.classList.toggle('breath', breath);
-  const n = document.getElementById('beatN'), l = document.getElementById('beatL'), h = document.getElementById('metroHint');
+  const n = document.getElementById('beatN'), l = document.getElementById('beatL'), h = document.getElementById('metroHint'), tx = document.getElementById('metroText');
   if(breath){
     n.textContent = '2'; l.textContent = 'вдоха · ' + Math.max(0, Math.ceil((M.breathEnd-Date.now())/1000)) + ' с';
-    h.innerHTML = 'Запрокиньте голову, зажмите нос.<br>2 вдоха по 1 секунде — грудь должна подняться.';
-  } else if(M.onlyComp){
-    n.textContent = M.total; l.textContent = 'нажатий';
-    h.textContent = M.running ? 'Нажимайте на каждый сигнал, без пауз' : 'Пауза — продолжите как можно скорее';
+    tx.innerHTML = 'Запрокиньте голову, зажмите нос.<br>2 вдоха рот в рот по 1 секунде.<br>Смотрите: <u>грудь поднимается?</u>';
+    h.textContent = 'Сделайте 2 вдоха';
   } else {
     n.textContent = M.count; l.textContent = 'из 30';
-    h.textContent = M.running ? 'Нажимайте на каждый сигнал' : 'Пауза — продолжите как можно скорее';
+    tx.innerHTML = 'Основание ладони — <b>в центр груди</b>, руки прямые. Продавливайте на <b>5–6 см</b> на каждый сигнал.';
+    h.textContent = M.running ? (M.count>=25 ? 'Скоро 2 вдоха' : 'Нажимайте на каждый сигнал') : 'Пауза — продолжите как можно скорее';
   }
+  tx.className = 'metro-text' + (breath ? ' breath' : '');
   h.className = 'metro-hint' + (breath ? ' breath' : '');
   const b = document.getElementById('metroBtn');
   if(breath){ b.textContent = 'Вдохи сделаны'; b.className = 'big dark'; }
   else { b.textContent = M.running ? 'Пауза' : 'Продолжить'; b.className = 'big ' + (M.running ? 'light' : 'red'); }
-  const m = document.getElementById('modeBtn');
-  if(m) m.textContent = M.onlyComp ? 'Могу делать вдохи — режим 30 : 2' : 'Не умею или не могу делать вдохи';
 }
 
 const T = { end:0, timer:null, total:0 };
@@ -336,8 +355,9 @@ function paintTimer(){
   const active = T.end && T.total===total;
   const left = active ? Math.max(0, Math.round((T.end - Date.now())/1000)) : total;
   el.textContent = Math.floor(left/60) + ':' + String(left%60).padStart(2,'0');
-  document.getElementById('tBtn').hidden = !!active;
-  document.getElementById('tDone').hidden = !(active && left===0);
+  const btn = document.getElementById('tBtn');
+  if(active && left===0){ btn.hidden = false; btn.disabled = true; btn.textContent = 'Время вышло'; }
+  else { btn.hidden = !!active; }
   if(active && left===0 && T.timer){ clearInterval(T.timer); T.timer=null; tone(660,0.5,[200,100,200]); }
 }
 
@@ -366,13 +386,14 @@ function back(){
 function home(){ metroReset(); S.hist=[]; S.screen='home'; render(); }
 function isMetro(){ return S.screen==='flow' && FLOWS[S.flow].steps[S.step].kind==='metro'; }
 function afterNav(){
-  if(isMetro()){ if(!M.running){ M.count=0; M.total=0; metroStart(); } }
+  if(isMetro()){ if(!M.running){ M.count=0; metroStart(); } }
   else metroStop();
   render();
 }
 function act(btn){
   const g = btn.go;
   if(g==='call') return askCall('103');
+  if(g==='back') return back();
   if(g==='next') return go('flow', {step:S.step+1});
   if(typeof g==='number') return go('flow', {step:g});
   if(g.startsWith('done:')) return go('done', {done:g.slice(5)});
@@ -392,18 +413,24 @@ function tabs(){
 function listHtml(items){ return '<ol class="do">' + items.map(x=>'<li><span>'+x+'</span></li>').join('') + '</ol>'; }
 function stepBody(st){
   let h = '';
-  if(st.body) h += '<p class="lead">'+st.body+'</p>';
   if(st.list) h += listHtml(st.list);
   if(st.note) h += '<div class="note">'+st.note+'</div>';
   if(st.warn) h += '<div class="warn">'+st.warn+'</div>';
   return h;
 }
+function btnHtml(b, attr){ return '<button class="big '+(b.style||'dark')+(b.small?' small':'')+'" '+attr+'>'+b.label+'</button>'; }
+function buttons(list, key, st){
+  const html = list.map((b,k)=>btnHtml(b, key+'="'+k+'"'));
+  if(st && st.pair && html.length===2) return '<div class="row2">'+html.join('')+'</div>';
+  if(st && st.pairLast && html.length===3) return html[0] + '<div class="row2">'+html[1]+html[2]+'</div>';
+  return html.join('');
+}
 
 function vHome(){
-  return '<div class="scroll" style="padding-top:16px">' +
-    '<button class="call-card" data-a="call"><div class="ring">'+I.phone.replace(/24/g,'32')+'</div><div><b>Позвонить 103</b><span>Скорая помощь</span></div></button>' +
-    '<h1 style="margin-top:8px;font-size:28px">Что случилось?</h1>' +
-    '<button class="sit primary" data-flow="cpr">'+I.heart+'Не дышит</button>' +
+  return '<div class="scroll" style="padding-top:14px">' +
+    '<button class="call-card" data-a="call"><div class="ring">'+I.phone.replace(/24/g,'30')+'</div><div><b>Позвонить 103</b><span>Скорая помощь</span></div></button>' +
+    '<h1 style="margin-top:6px">Что случилось?</h1>' +
+    '<button class="sit primary" data-flow="cpr">'+I.person+'Без сознания</button>' +
     '<button class="sit" data-flow="bleed">'+I.drop+'Сильно кровоточит</button>' +
     '<button class="sit" data-flow="choke">'+I.choke+'Подавился</button>' +
     '<button class="sit" data-flow="diab">'+I.sugar+'Диабетику плохо</button>' +
@@ -412,7 +439,7 @@ function vHome(){
   '</div>' + tabs();
 }
 function vList(){
-  return '<div class="top"><h1 style="font-size:26px">Все ситуации</h1></div><div class="scroll">' +
+  return '<div class="top"><h1>Все ситуации</h1></div><div class="scroll">' +
     LIST.map(x => '<button class="list-item" '+(x.flow?'data-flow="'+x.flow+'"':'disabled')+'><div style="flex:1;min-width:0"><span class="t">'+x.t+'</span><span class="s">'+x.s+'</span></div>' +
       (x.flow ? (x.urgent?'<span class="tag">Срочно</span>':'') + I.chev : '<span class="tag soon">Скоро</span>') + '</button>').join('') +
   '</div>' + tabs();
@@ -423,37 +450,35 @@ function vFlow(){
   const head = topBar('<button class="icon-btn" data-a="home" aria-label="Закрыть">'+I.close+'</button>') + prog;
   const prevBtn = S.hist.length && S.hist[S.hist.length-1].screen==='flow' ? '<button class="link-btn" data-a="back">← Предыдущий шаг</button>' : '';
   if(st.kind==='metro'){
-    return head + '<div class="scroll"><div class="metro">' +
-      '<h1 style="font-size:28px">Давите на грудь в такт</h1>' +
-      '<p style="font-size:17px;line-height:1.45">Человек на спине, на твёрдом. Основание ладони — <b>в центр груди</b>, вторая сверху, руки прямые. Глубина <b>5–6 см</b>, грудь полностью расправляется.</p>' +
-      '<div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:220px"><div id="beat" class="beat" aria-hidden="true"><b id="beatN">0</b><span id="beatL">из 30</span></div></div>' +
-      '<span id="metroHint" class="metro-hint" aria-live="polite"></span></div></div>' +
-      '<div class="bottom"><button id="metroBtn" class="big light" data-a="metro">Пауза</button>' +
-      '<button id="modeBtn" class="big light small" data-a="mode"></button>' + prevBtn + '</div>';
+    return head + '<div class="scroll" style="overflow:hidden"><div class="metro">' +
+      '<h1>Давите на грудь в такт</h1>' +
+      '<div id="metroText" class="metro-text" aria-live="assertive"></div>' +
+      '<div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center"><div id="beat" class="beat" aria-hidden="true"><b id="beatN">0</b><span id="beatL">из 30</span></div></div>' +
+      '<span id="metroHint" class="metro-hint"></span></div></div>' +
+      '<div class="bottom"><div class="row2"><button id="metroBtn" class="big light" data-a="metro">Пауза</button>' +
+      '<button class="big light" data-a="woke">Очнулся / задышал</button></div>' + prevBtn + '</div>';
   }
-  let body = (S.step===0 ? HELP_ALERT : '') + '<span class="step-no">Шаг '+(S.step+1)+' из '+n+'</span><h1>'+st.title+'</h1>' + stepBody(st);
-  if(st.kind==='timer') body += '<div class="timer"><b id="tLeft">'+st.minutes+':00</b><button id="tBtn" class="big dark small" data-a="timer">Запустить таймер на '+st.minutes+' мин</button><span id="tDone" hidden style="font-weight:700">Время вышло</span></div>';
-  const btns = st.btns.map((b,k)=>'<button class="big '+(b.style||'dark')+'" data-btn="'+k+'">'+b.label+'</button>').join('');
-  return head + '<div class="scroll" style="padding-top:16px">'+body+'</div><div class="bottom">'+btns+prevBtn+'</div>';
+  const body = (S.step===0 ? HELP_ALERT : '') + '<span class="step-no">Шаг '+(S.step+1)+' из '+n+'</span><h1>'+st.title+'</h1>' + stepBody(st) +
+    (st.kind==='timer' ? '<div class="timer"><b id="tLeft">'+st.minutes+':00</b><button id="tBtn" class="small-btn" data-a="timer">Запустить таймер</button></div>' : '');
+  return head + '<div class="scroll">'+body+'</div><div class="bottom">'+buttons(st.btns,'data-btn',st)+prevBtn+'</div>';
 }
 function vDone(){
   const d = DONE[S.done];
-  const extra = (d.btns||[]).map((b,k)=>'<button class="big '+(b.style||'dark')+'" data-dbtn="'+k+'">'+b.label+'</button>').join('');
   return topBar('<button class="icon-btn" data-a="home" aria-label="Закрыть">'+I.close+'</button>') +
-    '<div class="scroll" style="padding-top:16px"><h1>'+d.title+'</h1>'+listHtml(d.list)+'</div>' +
-    '<div class="bottom">' + extra + '<button class="big light small" data-a="home">На главную</button></div>';
+    '<div class="scroll" style="padding-top:12px"><h1>'+d.title+'</h1>'+listHtml(d.list)+'</div>' +
+    '<div class="bottom">' + buttons(d.btns||[], 'data-dbtn') + (d.btns && d.btns[0].go==='back' ? '' : '<button class="big light small" data-a="home">На главную</button>') + '</div>';
 }
 function vCall(){
   const fromFlow = S.hist.some(h=>h.screen==='flow');
   return '<div class="top"><button class="icon-btn" data-a="back" aria-label="Назад">'+I.back+'</button></div>' +
     '<div class="scroll">' +
-    '<h1 style="font-size:28px">Экстренный вызов</h1>' +
-    '<button class="num-card" data-call="103"><div><span style="font-size:15px;font-weight:600;opacity:.92">Скорая помощь</span><br><b>103</b></div><div class="call-card" style="width:auto;min-height:0;padding:0;background:transparent"><div class="ring">'+I.phone.replace(/24/g,'30')+'</div></div></button>' +
+    '<h1>Экстренный вызов</h1>' +
+    '<button class="num-card" data-call="103"><div><span style="font-size:15px;font-weight:600;opacity:.92">Скорая помощь</span><br><b>103</b></div><div class="call-card" style="width:auto;min-height:0;padding:0;background:transparent"><div class="ring">'+I.phone.replace(/24/g,'28')+'</div></div></button>' +
     '<button class="num-row" data-call="112"><span>Единая служба спасения</span><b>112</b></button>' +
     '<div class="loc"><span class="muted" style="font-size:14px;font-weight:600">Где вы находитесь</span>' +
-      '<b id="locText">Нажмите, чтобы определить</b>' +
-      '<div class="row"><button class="small-btn" data-a="locate">Определить</button><button class="small-btn" data-a="copyloc" id="copyBtn" hidden>Скопировать</button></div></div>' +
-    '<h2 style="margin-top:6px">Что сказать диспетчеру</h2>' +
+      '<div id="locAddr" class="addr">Нажмите «Определить адрес»</div><div id="locNear" class="near" hidden></div>' +
+      '<div class="row"><button class="small-btn" data-a="locate">Определить адрес</button><button class="small-btn" data-a="copyloc" id="copyBtn" hidden>Скопировать</button><a class="small-btn" id="mapLink" hidden target="_blank" rel="noopener">На карте</a></div></div>' +
+    '<h2 style="margin-top:4px">Что сказать диспетчеру</h2>' +
     '<ol class="say"><li><span>1</span>Адрес: улица, дом, подъезд, этаж</li><li><span>2</span>Что случилось и сколько пострадавших</li><li><span>3</span>Возраст, есть ли сознание и дыхание</li><li><span>4</span>Ваш номер телефона</li></ol>' +
     '<div class="note">Не кладите трубку первым — диспетчер подскажет, что делать.</div>' +
     '</div>' + (fromFlow ? '<div class="bottom"><button class="big dark" data-a="back">Вернуться к инструкции</button></div>' : tabs());
@@ -464,6 +489,7 @@ function render(){
   app.innerHTML = v();
   if(isMetro()) paintMetro();
   if(S.screen==='flow' && FLOWS[S.flow].steps[S.step].kind==='timer') paintTimer();
+  if(S.screen==='call' && LOC.addr) paintLoc();
   const sc = app.querySelector('.scroll'); if(sc) sc.scrollTop = 0;
 }
 
@@ -480,31 +506,67 @@ app.addEventListener('click', e => {
   else if(a==='callscreen'){ S.hist=[]; S.screen='call'; render(); }
   else if(a==='back') back();
   else if(a==='metro'){ if(M.phase==='breath') breathEnd(); else (M.running ? metroStop() : metroStart()); }
-  else if(a==='mode'){ M.onlyComp = !M.onlyComp; M.count=0; M.total=0; if(M.phase==='breath') breathEnd(); paintMetro(); }
+  else if(a==='woke'){ const mins = M.startedAt ? Math.max(1, Math.round((Date.now()-M.startedAt)/60000)) : 0; metroStop(); lockScreen(false); go('done', {done:'woke'}); if(mins){ const h=app.querySelector('h1'); if(h) h.insertAdjacentHTML('afterend','<div class="note">Реанимация длилась около <b>'+mins+' мин</b>.</div>'); } }
   else if(a==='timer') timerStart(FLOWS[S.flow].steps[S.step].minutes);
   else if(a==='locate') locate();
   else if(a==='copyloc') copyLoc();
 });
 document.addEventListener('visibilitychange', () => { if(document.visibilityState==='visible' && M.running) lockScreen(true); });
 
-let lastLoc = '';
+/* ---------- местоположение: улица, дом и ближайшие дома (OpenStreetMap) ---------- */
+const LOC = { lat:0, lon:0, addr:'', near:[], acc:0 };
+function withTimeout(promise, ms){ return Promise.race([promise, new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')), ms))]); }
+function dist(a,b,c,d){ const R=6371000, x=(d-b)*Math.PI/180*Math.cos((a+c)/2*Math.PI/180), y=(c-a)*Math.PI/180; return Math.round(Math.sqrt(x*x+y*y)*R); }
+function streetLine(t){
+  const street = t['addr:street'] || t.road || t.pedestrian || t.footway || t.residential || '';
+  const house = t['addr:housenumber'] || t.house_number || '';
+  return [street, house].filter(Boolean).join(', ');
+}
+function paintLoc(){
+  const a = document.getElementById('locAddr'); if(!a) return;
+  a.textContent = LOC.addr || 'Адрес не найден';
+  const n = document.getElementById('locNear');
+  if(LOC.near.length){ n.hidden = false; n.innerHTML = 'Рядом: ' + LOC.near.map(x=>x.t+' — '+x.d+' м').join('; '); } else n.hidden = true;
+  const c = document.getElementById('copyBtn'); if(c) c.hidden = !LOC.addr;
+  const m = document.getElementById('mapLink'); if(m && LOC.lat){ m.hidden = false; m.href = 'https://www.google.com/maps?q=' + LOC.lat + ',' + LOC.lon; }
+}
 function locate(){
-  const el = document.getElementById('locText');
-  if(!navigator.geolocation){ el.textContent = 'Телефон не поддерживает определение места'; return; }
+  const el = document.getElementById('locAddr');
+  if(!navigator.geolocation){ el.textContent = 'Телефон не поддерживает определение места. Назовите адрес по табличке на доме.'; return; }
   el.textContent = 'Определяю…';
-  navigator.geolocation.getCurrentPosition(p => {
-    lastLoc = p.coords.latitude.toFixed(5) + ', ' + p.coords.longitude.toFixed(5);
-    const e2 = document.getElementById('locText'); if(!e2) return;
-    e2.textContent = lastLoc + ' (±' + Math.round(p.coords.accuracy) + ' м)';
-    const c = document.getElementById('copyBtn'); if(c) c.hidden = false;
+  navigator.geolocation.getCurrentPosition(async p => {
+    LOC.lat = +p.coords.latitude.toFixed(6); LOC.lon = +p.coords.longitude.toFixed(6); LOC.acc = Math.round(p.coords.accuracy);
+    LOC.addr = ''; LOC.near = [];
+    const e1 = document.getElementById('locAddr'); if(e1) e1.textContent = 'Ищу улицу и дом…';
+    try{
+      const r = await withTimeout(fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=18&accept-language=ru&lat='+LOC.lat+'&lon='+LOC.lon), 9000);
+      const j = await r.json(); const ad = j.address || {};
+      const line = streetLine(ad);
+      const place = ad.city || ad.town || ad.village || ad.county || '';
+      LOC.addr = [line, place].filter(Boolean).join(', ');
+    }catch(e){}
+    try{
+      const q = '[out:json][timeout:8];nwr(around:80,'+LOC.lat+','+LOC.lon+')["addr:housenumber"];out center 12;';
+      const r = await withTimeout(fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q)), 10000);
+      const j = await r.json();
+      const seen = new Set();
+      LOC.near = (j.elements||[]).map(x => {
+        const la = x.lat || (x.center && x.center.lat), lo = x.lon || (x.center && x.center.lon);
+        return { t: streetLine(x.tags||{}), d: la ? dist(LOC.lat, LOC.lon, la, lo) : 9999 };
+      }).filter(x => x.t && !seen.has(x.t) && seen.add(x.t)).sort((a,b)=>a.d-b.d).slice(0,3);
+    }catch(e){}
+    if(!LOC.addr && LOC.near.length) LOC.addr = LOC.near[0].t;
+    if(!LOC.addr) LOC.addr = 'Нет интернета для поиска адреса. Координаты: ' + LOC.lat + ', ' + LOC.lon;
+    paintLoc();
   }, err => {
-    const e2 = document.getElementById('locText'); if(!e2) return;
+    const e2 = document.getElementById('locAddr'); if(!e2) return;
     e2.textContent = err.code === 1 ? 'Нет разрешения на геолокацию. Назовите адрес по табличке на доме.' : 'Не удалось определить. Назовите адрес по табличке на доме.';
   }, { enableHighAccuracy:true, timeout:15000, maximumAge:30000 });
 }
 function copyLoc(){
   const c = document.getElementById('copyBtn');
-  try{ navigator.clipboard.writeText(lastLoc).then(()=>{ if(c) c.textContent = 'Скопировано'; }, ()=>{}); }catch(e){}
+  const text = LOC.addr + (LOC.lat ? ' (' + LOC.lat + ', ' + LOC.lon + ')' : '');
+  try{ navigator.clipboard.writeText(text).then(()=>{ if(c) c.textContent = 'Скопировано'; }, ()=>{}); }catch(e){}
 }
 
 if('serviceWorker' in navigator){
