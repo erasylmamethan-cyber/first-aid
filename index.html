@@ -43,6 +43,8 @@ button,a{font:inherit}
 .top{display:flex;justify-content:space-between;align-items:center;padding-block:8px 2px;min-height:50px}
 .icon-btn{width:46px;height:46px;border-radius:23px;border:0;background:transparent;color:var(--fg);display:flex;align-items:center;justify-content:center;margin-left:-10px;cursor:pointer}
 .back-btn{width:auto;height:44px;margin-left:0;padding:0 14px 0 6px;gap:2px;border-radius:22px;border:1px solid var(--line);background:var(--surface);font-size:16px;font-weight:700}
+.voice-btn{margin-left:0;width:44px;height:44px;border:1px solid var(--line);background:var(--surface)}
+.voice-btn[aria-pressed="true"]{color:var(--calm);border-color:var(--calm)}
 .pill-103{border:0;background:var(--accent);color:var(--accent-ink);height:42px;padding:0 16px;border-radius:21px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;cursor:pointer}
 .scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-block:8px 6px}
 .bottom{display:flex;flex-direction:column;gap:8px;padding-block:6px 12px}
@@ -105,7 +107,7 @@ ol.do b{font-weight:800}
 
 /* timer */
 .timer{background:var(--info-bg);color:var(--info-fg);border-radius:20px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.timer b{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.timer b{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap}
 .timer .small-btn{background:var(--strong);color:var(--strong-ink);border:0}
 
 /* call */
@@ -278,6 +280,67 @@ const FLOWS = {
     { title:'Ничего не давайте в рот',
       list:['Ни еды, ни питья — <b>может захлебнуться</b>.','<b>Не вводите инсулин</b> — сахар упадёт ещё сильнее.','<b>Звоните 103</b>, скажите, что у человека диабет.','Дышит — <b>положите на бок</b>.'],
       btns:[{label:'Не дышит — реанимация', go:'flow:cpr:2', style:'red'}, {label:'Позвонить 103', go:'call', style:'light'}] }
+  ]},
+  stroke: { name:'Признаки инсульта', steps:[
+    { title:'Проверьте 3 признака',
+      list:['<b>Лицо:</b> попросите улыбнуться. Один угол рта <b>опущен</b>?','<b>Руки:</b> попросите поднять обе. Одна <b>опускается</b> или не поднимается?','<b>Речь:</b> попросите повторить фразу. Говорит <b>невнятно</b> или не понимает?'],
+      note:'Ещё внезапно: потеря зрения, сильная головная боль, шатается. <b>Хотя бы один признак — звоните 103</b>, даже если всё прошло.',
+      btns:[{label:'Позвонить 103', go:'call', style:'red'}, {label:'Позвонил(а) — дальше', go:'next'}], pair:true },
+    { kind:'stamp', title:'Запомните время',
+      list:['Когда <b>начались признаки</b>? Или когда человека <b>последний раз видели здоровым</b>?','Скажите время врачам — <b>от него зависит лечение</b>.'],
+      btns:[{label:'Дальше', go:'next'}] },
+    { title:'Пока едет скорая',
+      list:['<b>Не давайте есть и пить</b> — глотание может быть нарушено.','<b>Не давайте лекарства</b>, даже аспирин: при некоторых инсультах он опасен.','Не заставляйте ходить. Удобно уложите, <b>голова чуть приподнята</b>, расстегните тесную одежду.','Не отвечает, но дышит — <b>на бок</b>.'],
+      btns:[{label:'Не дышит — реанимация', go:'flow:cpr:2', style:'red'}, {label:'Ждём скорую', go:'done:stroke', style:'light'}], pair:true }
+  ]},
+  anaph: { name:'Сильная аллергия', steps:[
+    { title:'Проверьте признаки анафилаксии',
+      list:['После укуса, еды или лекарства <b>быстро</b> становится хуже:','<b>трудно дышать</b>, хрипы, отёк губ, языка, горла;','<b>слабость, бледность</b>, теряет сознание;','часто — сыпь, зуд, рвота, боль в животе.'],
+      btns:[{label:'Да, похоже', go:'next', style:'red'}, {label:'Только сыпь, дышит нормально', go:'done:allergy-mild', style:'light'}] },
+    { title:'Звоните 103 и ищите шприц',
+      list:['Звоните <b>103</b>, скажите: «<b>анафилаксия</b>».','Спросите про <b>шприц-ручку с адреналином</b>: в сумке, кармане.','Уберите причину: <b>жало соскребите</b> ногтем или картой, еду — изо рта.'],
+      btns:[{label:'Шприц есть', go:'next', style:'red'}, {label:'Шприца нет', go:3, style:'light'}], pair:true },
+    { kind:'stamp', title:'Введите адреналин в бедро',
+      list:['Снимите <b>колпачок</b>, как нарисовано на шприце.','Прижмите кончик к <b>наружной стороне бедра</b>. Можно через одежду, не в шов и не в карман.','Нажмите до щелчка, <b>держите 10 секунд</b>.'],
+      note:'Через <b>5 минут не лучше</b> — второй шприц в другое бедро.',
+      btns:[{label:'Ввёл(а) — дальше', go:'next'}] },
+    { title:'Уложите правильно',
+      list:['<b>Лёжа, ноги приподняты.</b>','Трудно дышать — пусть <b>сидит</b>.','Беременная — на <b>левый бок</b>.','<b>Не давайте вставать</b>, даже если стало лучше: давление может резко упасть.'],
+      btns:[{label:'Не дышит — реанимация', go:'flow:cpr:2', style:'red'}, {label:'Ждём скорую', go:'done:anaph', style:'light'}], pair:true }
+  ]},
+  seizure: { name:'Судороги', steps:[
+    { title:'Не держите, ничего в рот',
+      list:['<b>Не удерживайте</b> руки и ноги.','<b>Ничего не кладите в рот</b> — ни ложку, ни пальцы. Язык не «западёт».','Уберите вокруг <b>острое и твёрдое</b>.','<b>Под голову</b> — свёрнутую куртку или сумку.'],
+      btns:[{label:'Дальше', go:'next'}] },
+    { kind:'timer', minutes:5, title:'Засеките время',
+      list:['Обычно судороги проходят <b>за 1–2 минуты</b>.','Идут <b>дольше 5 минут</b> или начались снова — звоните 103.'],
+      btns:[{label:'Судороги закончились', go:'next'}, {label:'Позвонить 103', go:'call', style:'red'}], pair:true },
+    { title:'Когда судороги прекратились',
+      list:['<b>Смотрите на грудную клетку</b>: дышит?','Дышит — <b>на бок</b>, рот вниз. Укройте.','<b>Будьте рядом</b>, говорите спокойно: человек может не понимать, что случилось.','<b>Не давайте пить</b>, пока полностью не очнётся.'],
+      btns:[{label:'Не дышит — реанимация', go:'flow:cpr:2', style:'red'}, {label:'Дышит', go:'done:seizure', style:'light'}], pair:true }
+  ]},
+  fracture: { name:'Перелом', steps:[
+    { title:'Не двигайте и не вправляйте',
+      list:['<b>Не выпрямляйте</b> и не вправляйте кость.','<b>Не проверяйте</b>, двигается ли.','Возможна травма <b>спины, шеи, таза или бедра</b> — не двигайте человека совсем.'],
+      btns:[{label:'Дальше', go:'next'}] },
+    { title:'Зафиксируйте как есть',
+      list:['Поддержите <b>в том положении, как нашли</b>: подложите свёрнутую одежду, подушку.','Рука — <b>подвяжите к телу</b> шарфом или рубашкой.','Кость торчит из раны — не трогайте, <b>давите вокруг раны</b>, накройте чистой тканью.','<b>Холод через ткань</b> — уменьшит боль и отёк.'],
+      btns:[{label:'Дальше', go:'next'}] },
+    { title:'Когда звонить 103',
+      list:['Перелом <b>бедра, таза, спины, шеи</b> или головы.','Кость <b>торчит</b> или сильно кровоточит.','Ниже травмы кожа <b>бледная, синяя, холодная</b>, онемела.','Слабеет, бледнеет, <b>теряет сознание</b>.'],
+      btns:[{label:'Позвонить 103', go:'call', style:'red'}, {label:'Ничего из этого', go:'done:fracture', style:'light'}], pair:true }
+  ]},
+  chokei: { name:'Младенец подавился', steps:[
+    { title:'Проверьте: плачет или кашляет?',
+      list:['<b>Кашляет, плачет</b> — не мешайте, следите.','<b>Не может плакать, кашлять, дышать</b> — действуйте сразу.'],
+      btns:[{label:'Не может дышать', go:'next', style:'red'}, {label:'Кашляет', go:'done:cough-infant', style:'light'}], pair:true },
+    { title:'5 ударов по спине',
+      list:['Сядьте. Малыш — <b>лицом вниз на предплечье</b>, рука на бедре.','Пальцами держите <b>челюсть</b>, голова <b>ниже тела</b>.','Основанием ладони — <b>5 ударов между лопатками</b>.','Видно предмет — достаньте. <b>Не видно — пальцем не лезьте.</b>'],
+      btns:[{label:'Не помогло', go:'next', style:'red'}, {label:'Вышло', go:'done:choke-infant', style:'light'}], pair:true },
+    { title:'5 толчков в грудь',
+      list:['Переверните <b>лицом вверх</b> на другое предплечье, голова ниже тела.','<b>Два пальца</b> — в центр груди, чуть ниже линии сосков.','<b>5 резких толчков</b> вниз.'],
+      warn:'<b>Не давите на живот</b> и не переворачивайте вверх ногами.',
+      btns:[{label:'Не помогло — снова удары по спине', go:1}, {label:'Вышло', go:'done:choke-infant', style:'light'}, {label:'Потерял сознание', go:'done:choke-infant-unc', style:'red'}], pairLast:true }
   ]}
 };
 const DONE = {
@@ -291,6 +354,14 @@ const DONE = {
   choke:{ title:'Дыхание восстановилось', list:['После толчков в живот <b>обязательно покажите врачу</b> — бывают внутренние травмы.'] },
   'choke-unconscious':{ title:'Опустите на пол — реанимация', list:['Аккуратно <b>опустите на спину</b>.','<b>Позвоните 103.</b>','Загляните в рот: предмет <b>видно</b> — достаньте. <b>Не видно — пальцем не лезьте</b>.','Начинайте <b>реанимацию 30 : 2</b>.'], btns:[{label:'Начать реанимацию', go:'flow:cpr:3', style:'red'}] },
   burn:{ title:'Ожог закрыт', list:['<b>Сильная боль, жар, гной</b> или ожог не заживает — к врачу.'] },
+  stroke:{ title:'Будьте рядом до скорой', list:['Говорите <b>спокойно</b>, не оставляйте одного.','<b>Смотрите на грудную клетку</b>. Перестал дышать — реанимация.','Скажите врачам <b>время</b>, когда начались признаки.'], btns:[{label:'Перестал дышать', go:'flow:cpr:2', style:'red'}] },
+  anaph:{ title:'Ждите скорую рядом', list:['Через <b>5 минут не лучше</b> — второй шприц в другое бедро, если есть.','<b>Не оставляйте одного</b>, даже если стало лучше: реакция может вернуться.','Скажите врачам <b>время укола</b> и отдайте использованный шприц.'], btns:[{label:'Перестал дышать', go:'flow:cpr:2', style:'red'}] },
+  'allergy-mild':{ title:'Следите за состоянием', list:['Будьте рядом <b>хотя бы 30 минут</b>.','Появились <b>трудное дыхание</b>, хрипы, отёк губ или языка, слабость — <b>сразу звоните 103</b>.'], btns:[{label:'Стало хуже', go:'flow:anaph:1', style:'red'}] },
+  seizure:{ title:'Звоните 103, если', list:['Приступ <b>впервые</b> или не знаете, есть ли эпилепсия.','Длился <b>дольше 5 минут</b> или начался снова.','<b>Не приходит в себя</b>.','Есть <b>травма</b>, беременность, диабет, или приступ был <b>в воде</b>.'], btns:[{label:'Позвонить 103', go:'call', style:'red'}] },
+  fracture:{ title:'Обратитесь в травмпункт', list:['Езжайте, <b>не снимая фиксацию</b>.','Не давите на место травмы, <b>холод — через ткань</b>.','Усилилась боль, онемели пальцы, кожа посинела — <b>звоните 103</b>.'] },
+  'cough-infant':{ title:'Пусть кашляет', list:['Не стучите по спине, пока малыш <b>кашляет и плачет</b>.','Будьте рядом и следите.','<b>Перестал кашлять</b> и не дышит — сразу удары по спине.'], btns:[{label:'Перестал кашлять', go:'flow:chokei:1', style:'red'}] },
+  'choke-infant':{ title:'Дыхание восстановилось', list:['<b>Обязательно покажите малыша врачу</b> — мог остаться кусочек или есть травма.'] },
+  'choke-infant-unc':{ title:'Начинайте реанимацию', list:['Положите <b>на спину, на твёрдое</b>.','<b>Позвоните 103.</b>','Загляните в рот: предмет <b>видно</b> — достаньте. <b>Не видно — не лезьте</b>.','Начинайте с <b>5 вдохов</b> в рот и нос.'], btns:[{label:'Начать реанимацию младенца', go:'flow:cpri:1', style:'red'}] },
   diab:{ title:'Стало лучше', list:['Дайте <b>поесть</b>, если ещё не ел.','<b>Не оставляйте одного</b> ближайший час.','Снова плохо — сладкое и <b>звоните 103</b>.'] }
 };
 const LIST = [
@@ -298,17 +369,46 @@ const LIST = [
   { t:'Сильно кровоточит', s:'Давление, давящая повязка, жгут', flow:'bleed', urgent:true },
   { t:'Подавился', s:'Удары по спине, толчки в живот', flow:'choke', urgent:true },
   { t:'Диабетику плохо', s:'Низкий сахар: слабость, пот, спутанность', flow:'diab', urgent:true },
+  { t:'Младенец подавился', s:'До 1 года: удары по спине, толчки в грудь', flow:'chokei', urgent:true },
+  { t:'Признаки инсульта', s:'Перекос лица, слабость в руке, нарушение речи', flow:'stroke', urgent:true },
+  { t:'Сильная аллергия', s:'Отёк, трудно дышать — анафилаксия', flow:'anaph', urgent:true },
+  { t:'Судороги', s:'Непроизвольные подёргивания, приступ', flow:'seizure' },
   { t:'Ожог', s:'Термический, кипяток, солнечный', flow:'burn' },
-  { t:'Признаки инсульта', s:'Перекос лица, слабость в руке, нарушение речи' },
-  { t:'Сильная аллергия', s:'Отёк, трудно дышать после аллергена' },
-  { t:'Судороги', s:'Непроизвольные подёргивания мышц' },
-  { t:'Перелом', s:'Деформация, сильная боль, отёк' },
-  { t:'Ребёнок до 1 года подавился', s:'Другая техника, чем у взрослых' }
+  { t:'Перелом', s:'Деформация, сильная боль, отёк', flow:'fracture' }
 ];
 const HELP_ALERT = '<div class="alert"><span><strong>Звоните 103 и громко кричите «Помогите!»</strong> — вдруг рядом врач. Не стесняйтесь: промедление может стоить жизни.</span><button class="small-btn" data-a="call" aria-label="Позвонить 103">'+I.phone.replace(/24/g,'18')+'103</button></div>';
 
 const S = { screen:'home', flow:null, step:0, done:null, hist:[] };
 const app = document.getElementById('app');
+const STAMPS = {};
+
+/* ---------- голосовое ведение: в панике текст не читают, поэтому каждый шаг звучит вслух ---------- */
+const VOICE = { on: true, voice: null };
+try{ VOICE.on = localStorage.getItem('firstaid-voice') !== 'off'; }catch(e){}
+function pickVoice(){
+  try{ const vs = speechSynthesis.getVoices(); VOICE.voice = vs.find(v => /^ru/i.test(v.lang) && v.localService) || vs.find(v => /^ru/i.test(v.lang)) || null; }catch(e){}
+}
+if('speechSynthesis' in window){ pickVoice(); try{ speechSynthesis.addEventListener('voiceschanged', pickVoice); }catch(e){} }
+function plain(html){ return String(html).replace(/<br\s*\/?>/gi, '. ').replace(/<[^>]+>/g, '').replace(/[«»]/g, '').replace(/\s+/g, ' ').replace(/([.!?:;,])\s*\./g, '$1').trim(); }
+function say(text){
+  if(!VOICE.on || !('speechSynthesis' in window) || !text) return;
+  try{
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(plain(text));
+    u.lang = 'ru-RU'; if(VOICE.voice) u.voice = VOICE.voice; u.rate = 1.05;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function speakScreen(){
+  if(S.screen==='flow'){
+    const f = FLOWS[S.flow], st = f.steps[S.step];
+    if(st.kind==='metro') return say(METRO[f.type].title + '. ' + METRO[f.type].press);
+    return say((S.step===0 ? 'Звоните 103 и громко зовите на помощь. ' : '') + st.title + '. ' + (st.list||[]).join('. ') + (st.warn ? '. ' + st.warn : ''));
+  }
+  if(S.screen==='done'){ const d = DONE[S.done]; return say(d.title + '. ' + d.list.join('. ')); }
+  if(S.screen==='who') return say('Кто без сознания? Взрослый, ребёнок или младенец?');
+  try{ speechSynthesis.cancel(); }catch(e){}
+}
 
 /* ---------- звук, метроном, таймер ---------- */
 let ctx = null, wake = null;
@@ -349,13 +449,13 @@ function metroTick(){
 function breathStart(){
   if(!M.running) return;
   M.phase='breath'; M.breathEnd = Date.now()+6000;
-  tone(440, 0.4, 250);
+  tone(440, 0.4, 250); say('Два вдоха');
   clearInterval(M.tick2); M.tick2 = setInterval(()=>{ if(Date.now()>=M.breathEnd) breathEnd(); else paintMetro(); }, 250);
   paintMetro();
 }
 function breathEnd(){
   clearInterval(M.tick2); M.phase='press'; M.count=0;
-  if(M.running){ M.nextAt = Date.now(); metroTick(); }
+  if(M.running){ say('Нажимайте'); M.nextAt = Date.now(); metroTick(); }
   paintMetro();
 }
 function paintMetro(){
@@ -436,9 +536,13 @@ function act(btn){
 }
 
 /* ---------- экраны ---------- */
+const SPK_ON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
+const SPK_OFF = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
+function voiceBtn(){ return '<button class="icon-btn voice-btn" data-a="voice" aria-pressed="'+VOICE.on+'" aria-label="'+(VOICE.on?'Выключить голос':'Включить голос')+'">'+(VOICE.on?SPK_ON:SPK_OFF)+'</button>'; }
 function topBar(){
   return '<div class="top"><button class="icon-btn back-btn" data-a="back" aria-label="Назад">'+I.back+'<span>Назад</span></button>' +
-    '<button class="pill-103" data-a="call">' + I.phone.replace(/24/g,'18') + 'Позвонить 103</button></div>';
+    '<div style="display:flex;gap:6px;align-items:center">' + voiceBtn() +
+    '<button class="pill-103" data-a="call">' + I.phone.replace(/24/g,'18') + 'Позвонить 103</button></div></div>';
 }
 function tabs(){
   return '<nav class="tabs" aria-label="Меню">' +
@@ -509,7 +613,8 @@ function vFlow(){
       '<button class="big light" data-a="woke">Очнулся / задышал</button></div>' + prevBtn + '</div>';
   }
   const body = (S.step===0 ? HELP_ALERT : '') + '<span class="step-no">Шаг '+(S.step+1)+' из '+n+'</span><h1>'+st.title+'</h1>' + stepBody(st) +
-    (st.kind==='timer' ? '<div class="timer"><b id="tLeft">'+st.minutes+':00</b><button id="tBtn" class="small-btn" data-a="timer">Запустить таймер</button></div>' : '');
+    (st.kind==='timer' ? '<div class="timer"><b id="tLeft">'+st.minutes+':00</b><button id="tBtn" class="small-btn" data-a="timer">Запустить таймер</button></div>' : '') +
+    (st.kind==='stamp' ? '<div class="timer"><b id="stampT">'+(STAMPS[S.flow]||'––:––')+'</b><button class="small-btn" data-a="stamp">'+(STAMPS[S.flow]?'Отмечено':'Отметить время')+'</button></div>' : '');
   return head + '<div class="scroll">'+body+'</div><div class="bottom">'+buttons(st.btns,'data-btn',st)+prevBtn+'</div>';
 }
 function vDone(){
@@ -542,6 +647,8 @@ function render(){
   if(S.screen==='flow' && FLOWS[S.flow].steps[S.step].kind==='timer') paintTimer();
   if(S.screen==='call' && LOC.addr) paintLoc();
   const sc = app.querySelector('.scroll'); if(sc) sc.scrollTop = 0;
+  const key = S.screen + '|' + S.flow + '|' + S.step + '|' + S.done;
+  if(key !== render.last){ render.last = key; speakScreen(); }
 }
 
 app.addEventListener('click', e => {
@@ -560,6 +667,8 @@ app.addEventListener('click', e => {
   else if(a==='metro'){ if(M.phase==='breath') breathEnd(); else (M.running ? metroStop() : metroStart()); }
   else if(a==='woke'){ const mins = M.startedAt ? Math.max(1, Math.round((Date.now()-M.startedAt)/60000)) : 0; metroStop(); lockScreen(false); go('done', {done:'woke'}); if(mins){ const h=app.querySelector('h1'); if(h) h.insertAdjacentHTML('afterend','<div class="note">Реанимация длилась около <b>'+mins+' мин</b>.</div>'); } }
   else if(a==='timer') timerStart(FLOWS[S.flow].steps[S.step].minutes);
+  else if(a==='stamp'){ const d = new Date(); STAMPS[S.flow] = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); document.getElementById('stampT').textContent = STAMPS[S.flow]; t.textContent = 'Отмечено'; say('Время отмечено: ' + STAMPS[S.flow]); }
+  else if(a==='voice'){ VOICE.on = !VOICE.on; try{ localStorage.setItem('firstaid-voice', VOICE.on ? 'on' : 'off'); }catch(e){} if(!VOICE.on){ try{ speechSynthesis.cancel(); }catch(e){} } document.querySelectorAll('.voice-btn').forEach(b => b.outerHTML = voiceBtn()); if(VOICE.on){ render.last=''; speakScreen(); } }
   else if(a==='locate') locate();
   else if(a==='copyloc') copyLoc();
 });
