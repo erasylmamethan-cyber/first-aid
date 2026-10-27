@@ -1,8 +1,9 @@
 // Кэширует приложение при первом открытии, чтобы инструкции работали без интернета.
-const CACHE = 'first-aid-v6';
+const CACHE = 'first-aid-v7';
 const FILES = [
   './',
   './index.html',
+  './anim.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
