@@ -43,8 +43,6 @@ button,a{font:inherit}
 .top{display:flex;justify-content:space-between;align-items:center;padding-block:8px 2px;min-height:50px}
 .icon-btn{width:46px;height:46px;border-radius:23px;border:0;background:transparent;color:var(--fg);display:flex;align-items:center;justify-content:center;margin-left:-10px;cursor:pointer}
 .back-btn{width:auto;height:44px;margin-left:0;padding:0 14px 0 6px;gap:2px;border-radius:22px;border:1px solid var(--line);background:var(--surface);font-size:16px;font-weight:700}
-.voice-btn{margin-left:0;width:44px;height:44px;border:1px solid var(--line);background:var(--surface)}
-.voice-btn[aria-pressed="true"]{color:var(--calm);border-color:var(--calm)}
 .pill-103{border:0;background:var(--accent);color:var(--accent-ink);height:42px;padding:0 16px;border-radius:21px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;cursor:pointer}
 .scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-block:8px 6px}
 .bottom{display:flex;flex-direction:column;gap:8px;padding-block:6px 12px}
@@ -62,14 +60,14 @@ p{margin:0}
 
 /* steps */
 ol.do{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;counter-reset:d}
-ol.do li{counter-increment:d;display:flex;gap:10px;align-items:flex-start;font-size:17px;line-height:1.35}
+ol.do li{counter-increment:d;display:flex;gap:10px;align-items:flex-start;font-size:18px;line-height:1.35}
 ol.do li::before{content:counter(d);flex-shrink:0;width:26px;height:26px;border-radius:13px;background:var(--strong);color:var(--strong-ink);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
 ol.do b{font-weight:800}
 .alert{background:var(--accent-soft);border-radius:16px;padding:10px 12px;display:flex;gap:10px;align-items:center;font-size:14.5px;line-height:1.35}
 .alert strong{color:var(--accent-deep)}
 .alert .small-btn{flex-shrink:0;background:var(--accent);color:var(--accent-ink);border:0;padding:0 12px}
-.note{background:var(--info-bg);color:var(--info-fg);border-radius:14px;padding:10px 12px;font-size:15px;line-height:1.4}
-.warn{background:var(--warn-bg);color:var(--warn-fg);border-radius:14px;padding:10px 12px;font-size:15px;line-height:1.4}
+.note{background:var(--info-bg);color:var(--info-fg);border-radius:14px;padding:10px 12px;font-size:16px;line-height:1.4}
+.warn{background:var(--warn-bg);color:var(--warn-fg);border-radius:14px;padding:10px 12px;font-size:16px;line-height:1.4}
 .small-btn{min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none}
 .progress{display:flex;gap:6px}
 .progress i{flex:1;height:5px;border-radius:3px;background:var(--line)}
@@ -92,6 +90,11 @@ ol.do b{font-weight:800}
 .tag{font-size:12px;font-weight:700;padding:4px 8px;border-radius:8px;background:var(--accent-soft);color:var(--accent-deep);flex-shrink:0}
 .tag.soon{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
 
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.tile{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:18px;min-height:74px;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;gap:6px;font-size:16.5px;font-weight:800;line-height:1.15;text-align:left;cursor:pointer}
+.tile svg{color:var(--accent);width:26px;height:26px}
+.sheet .loc{padding:10px 12px;gap:6px}
+.sheet .loc .addr{font-size:18px}
 /* metronome */
 .metro{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;flex:1;min-height:0}
 .metro-text{width:100%;border-radius:16px;padding:12px 14px;font-size:17px;line-height:1.35;background:var(--surface);border:1px solid var(--line)}
@@ -107,7 +110,9 @@ ol.do b{font-weight:800}
 
 /* timer */
 .timer{background:var(--info-bg);color:var(--info-fg);border-radius:20px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.timer b{font-size:40px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap}
+.timer small{display:block;font-size:13px;line-height:1.3;margin-top:4px;opacity:.9}
+.timer > div{min-width:0}
+.timer b{font-size:36px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap}
 .timer .small-btn{background:var(--strong);color:var(--strong-ink);border:0}
 
 /* call */
@@ -128,14 +133,14 @@ ol.say li span{width:28px;height:28px;border-radius:14px;background:var(--strong
 
 /* call confirmation sheet */
 .sheet-wrap{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:flex-end;justify-content:center;z-index:50}
-.sheet{width:100%;max-width:460px;background:var(--surface);border-radius:28px 28px 0 0;padding:22px max(20px, env(safe-area-inset-left, 0px)) calc(20px + env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:12px}
+.sheet{width:100%;max-width:460px;max-height:100%;overflow-y:auto;background:var(--surface);border-radius:28px 28px 0 0;padding:22px max(20px, env(safe-area-inset-left, 0px)) calc(20px + env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:12px}
 .sheet h2{font-size:24px;font-weight:800}
 .sheet .num{font-size:44px;font-weight:800;color:var(--accent);line-height:1}
 @media (max-height: 700px){
   h1{font-size:22px}
   .scroll{gap:8px;padding-block:6px 4px}
   ol.do{gap:6px}
-  ol.do li{font-size:15.5px;line-height:1.3}
+  ol.do li{font-size:16.5px;line-height:1.3}
   ol.do li::before{width:23px;height:23px;font-size:13px}
   .alert{font-size:13.5px;padding:8px 10px}
   .note,.warn{font-size:14px;padding:8px 10px}
@@ -143,6 +148,11 @@ ol.say li span{width:28px;height:28px;border-radius:14px;background:var(--strong
   .big.small{min-height:44px;font-size:15px}
   .top{min-height:46px;padding-block:6px 0}
   .link-btn{min-height:36px}
+  .call-card{min-height:76px}
+  .tile{min-height:64px;font-size:15.5px}
+  .sit{min-height:58px}
+  .sheet{gap:8px;padding-top:16px}
+  .sheet .num{font-size:36px}
 }
 @media (prefers-reduced-motion: reduce){.beat{transition:none}.beat.hit{transform:none}}
 </style>
@@ -151,9 +161,18 @@ ol.say li span{width:28px;height:28px;border-radius:14px;background:var(--strong
 <div id="app"></div>
 <div id="sheet" class="sheet-wrap" hidden role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
   <div class="sheet">
-    <h2 id="sheetTitle">Позвонить в скорую?</h2>
-    <div class="num" id="sheetNum">103</div>
-    <p class="muted" style="font-size:15px">Звонок экстренный. Подтвердите, что вызов нужен.</p>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <div><h2 id="sheetTitle">Позвонить в скорую?</h2><div class="num" id="sheetNum">103</div></div>
+      <button class="small-btn" id="sheetAlt" data-call="112">или 112</button>
+    </div>
+    <div class="loc">
+      <span class="muted" style="font-size:14px;font-weight:600">Ваш адрес для диспетчера</span>
+      <div id="locAddr" class="addr">Определяю…</div>
+      <div id="locNear" class="near" hidden></div>
+      <div id="locTip" class="warn" hidden>Без интернета улицу не найти. Назовите <b>номер на табличке ближайшего дома</b>, улицу и ориентиры: магазин, остановку, перекрёсток.</div>
+      <div class="row"><button class="small-btn" data-a="locate">Обновить</button><button class="small-btn" data-a="copyloc" id="copyBtn" hidden>Скопировать</button><a class="small-btn" id="smsLink" hidden>SMS с местом</a><a class="small-btn" id="mapLink" hidden target="_blank" rel="noopener">На карте</a></div>
+    </div>
+    <p class="muted" style="font-size:14px;line-height:1.4">Скажите: <b>адрес</b>, что случилось, возраст, <b>дышит ли</b>. Не кладите трубку первым.</p>
     <a class="big red" id="sheetCall" href="tel:103">Да, позвонить 103</a>
     <button class="big light small" id="sheetCancel">Отмена</button>
   </div>
@@ -168,6 +187,10 @@ const I = {
   choke:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="M9 13v3h6v-3"/><path d="M8 20h8"/></svg>',
   fire:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-10-1 2-2 3-3 3 0-2-1-4-3-6 0 4-4 7-4 13 0 4 3 7 7 7z"/></svg>',
   sugar:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M15 9h.01M12 12h.01M9 15h.01M15 15h.01"/></svg>',
+  stroke:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01"/><path d="M8.5 16c1.5-.5 4-1.5 7-.5"/></svg>',
+  syringe:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 2 4 4M17 7l3-3M19 9 8.7 19.3a2.4 2.4 0 0 1-3.4 0l-.6-.6a2.4 2.4 0 0 1 0-3.4L15 5"/><path d="m9 11 4 4M5 19l-3 3M14 4l6 6"/></svg>',
+  zap:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h3l2-5 3 10 3-12 3 9 2-2h4"/></svg>',
+  bone:'<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 10c.7-.7 1.7-.7 2.5 0a2.5 2.5 0 0 0 .5-4 2.5 2.5 0 0 0-4-.5c.7.8.7 1.8 0 2.5L13.5 10.5"/><path d="M7 14c-.7.7-1.7.7-2.5 0a2.5 2.5 0 0 0-.5 4 2.5 2.5 0 0 0 4 .5c-.7-.8-.7-1.8 0-2.5l2.5-2.5"/><path d="m10.5 13.5 1-1.5 1 1 1-1.5"/></svg>',
   close:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
   back:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>',
   chev:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>',
@@ -242,16 +265,17 @@ const FLOWS = {
   choke: { name:'Подавился', steps:[
     { title:'Спросите: «Вы подавились?»',
       list:['<b>Кашляет</b> — пусть кашляет, по спине не стучите.','<b>Не может говорить, кашлять, дышать</b>, хватается за горло — действуйте сразу.'],
+      warn:'<b>Не давайте воду</b>: кусок она не протолкнёт, а сама может попасть в дыхательные пути и усилить удушье.',
       btns:[{label:'Не может дышать', go:'next', style:'red'}, {label:'Кашляет', go:'done:cough', style:'light'}] },
     { title:'5 ударов по спине',
       list:['Встаньте <b>сбоку и чуть сзади</b>.','Рукой поддержите грудь, <b>наклоните вперёд</b>.','Основанием ладони резко бейте <b>между лопатками</b>.','До <b>5 ударов</b>, после каждого смотрите — вышло ли.'],
       btns:[{label:'Не помогло', go:'next', style:'red'}, {label:'Вышло', go:'done:choke', style:'light'}], pair:true },
     { title:'Встаньте сзади и обхватите',
-      list:['Встаньте <b>сзади</b>, одну ногу — чуть вперёд для упора.','Обхватите руками <b>на уровне пояса</b>.','Слегка <b>наклоните человека вперёд</b>.'],
+      list:['Встаньте <b>сзади</b>, одну ногу — чуть вперёд для упора. Ребёнку — <b>встаньте на колени</b>.','Обхватите руками <b>на уровне пояса</b>.','Слегка <b>наклоните человека вперёд</b>.'],
       warn:'<b>Беременная</b> или не обхватить — толчки не в живот, а в <b>нижнюю часть грудины</b>. <b>Ребёнок до 1 года</b> — так нельзя.',
       btns:[{label:'Обхватил(а) — дальше', go:'next'}] },
     { title:'5 толчков в живот',
-      list:['Кулак — <b>чуть выше пупка</b>, ниже рёбер.','<b>Обхватите кулак</b> второй рукой.','Резко дёрните <b>на себя и вверх</b>.','До <b>5 раз</b>, после каждого смотрите — вышло ли.'],
+      list:['Кулак — <b>чуть выше пупка</b>, ниже рёбер.','<b>Обхватите кулак</b> второй рукой.','Резко дёрните <b>на себя и вверх</b>. Ребёнку — мягче.','До <b>5 раз</b>, после каждого смотрите — вышло ли.'],
       btns:[{label:'Не помогло — снова удары по спине', go:1}, {label:'Вышло', go:'done:choke', style:'light'}, {label:'Потерял сознание', go:'done:choke-unconscious', style:'red'}], pairLast:true }
   ]},
   burn: { name:'Ожог', steps:[
@@ -316,7 +340,7 @@ const FLOWS = {
       list:['Обычно судороги проходят <b>за 1–2 минуты</b>.','Идут <b>дольше 5 минут</b> или начались снова — звоните 103.'],
       btns:[{label:'Судороги закончились', go:'next'}, {label:'Позвонить 103', go:'call', style:'red'}], pair:true },
     { title:'Когда судороги прекратились',
-      list:['<b>Смотрите на грудную клетку</b>: дышит?','Дышит — <b>на бок</b>, рот вниз. Укройте.','<b>Будьте рядом</b>, говорите спокойно: человек может не понимать, что случилось.','<b>Не давайте пить</b>, пока полностью не очнётся.'],
+      list:['<b>Смотрите на грудную клетку</b>: дышит?','Дышит — <b>на бок</b>, рот вниз. Укройте.','<b>Будьте рядом</b>, говорите спокойно: человек может не понимать, что случилось.','<b>Не давайте пить</b>, пока полностью не очнётся: может поперхнуться и захлебнуться.'],
       btns:[{label:'Не дышит — реанимация', go:'flow:cpr:2', style:'red'}, {label:'Дышит', go:'done:seizure', style:'light'}], pair:true }
   ]},
   fracture: { name:'Перелом', steps:[
@@ -333,6 +357,7 @@ const FLOWS = {
   chokei: { name:'Младенец подавился', steps:[
     { title:'Проверьте: плачет или кашляет?',
       list:['<b>Кашляет, плачет</b> — не мешайте, следите.','<b>Не может плакать, кашлять, дышать</b> — действуйте сразу.'],
+      warn:'<b>Не давайте воду и смесь</b>: кусок она не протолкнёт, а сама может попасть в дыхательные пути и усилить удушье.',
       btns:[{label:'Не может дышать', go:'next', style:'red'}, {label:'Кашляет', go:'done:cough-infant', style:'light'}], pair:true },
     { title:'5 ударов по спине',
       list:['Сядьте. Малыш — <b>лицом вниз на предплечье</b>, рука на бедре.','Пальцами держите <b>челюсть</b>, голова <b>ниже тела</b>.','Основанием ладони — <b>5 ударов между лопатками</b>.','Видно предмет — достаньте. <b>Не видно — пальцем не лезьте.</b>'],
@@ -364,51 +389,12 @@ const DONE = {
   'choke-infant-unc':{ title:'Начинайте реанимацию', list:['Положите <b>на спину, на твёрдое</b>.','<b>Позвоните 103.</b>','Загляните в рот: предмет <b>видно</b> — достаньте. <b>Не видно — не лезьте</b>.','Начинайте с <b>5 вдохов</b> в рот и нос.'], btns:[{label:'Начать реанимацию младенца', go:'flow:cpri:1', style:'red'}] },
   diab:{ title:'Стало лучше', list:['Дайте <b>поесть</b>, если ещё не ел.','<b>Не оставляйте одного</b> ближайший час.','Снова плохо — сладкое и <b>звоните 103</b>.'] }
 };
-const LIST = [
-  { t:'Без сознания', s:'Взрослый, ребёнок, младенец — реанимация', flow:'who', urgent:true },
-  { t:'Сильно кровоточит', s:'Давление, давящая повязка, жгут', flow:'bleed', urgent:true },
-  { t:'Подавился', s:'Удары по спине, толчки в живот', flow:'choke', urgent:true },
-  { t:'Диабетику плохо', s:'Низкий сахар: слабость, пот, спутанность', flow:'diab', urgent:true },
-  { t:'Младенец подавился', s:'До 1 года: удары по спине, толчки в грудь', flow:'chokei', urgent:true },
-  { t:'Признаки инсульта', s:'Перекос лица, слабость в руке, нарушение речи', flow:'stroke', urgent:true },
-  { t:'Сильная аллергия', s:'Отёк, трудно дышать — анафилаксия', flow:'anaph', urgent:true },
-  { t:'Судороги', s:'Непроизвольные подёргивания, приступ', flow:'seizure' },
-  { t:'Ожог', s:'Термический, кипяток, солнечный', flow:'burn' },
-  { t:'Перелом', s:'Деформация, сильная боль, отёк', flow:'fracture' }
-];
 const HELP_ALERT = '<div class="alert"><span><strong>Звоните 103 и громко кричите «Помогите!»</strong> — вдруг рядом врач. Не стесняйтесь: промедление может стоить жизни.</span><button class="small-btn" data-a="call" aria-label="Позвонить 103">'+I.phone.replace(/24/g,'18')+'103</button></div>';
 
 const S = { screen:'home', flow:null, step:0, done:null, hist:[] };
 const app = document.getElementById('app');
 const STAMPS = {};
 
-/* ---------- голосовое ведение: в панике текст не читают, поэтому каждый шаг звучит вслух ---------- */
-const VOICE = { on: true, voice: null };
-try{ VOICE.on = localStorage.getItem('firstaid-voice') !== 'off'; }catch(e){}
-function pickVoice(){
-  try{ const vs = speechSynthesis.getVoices(); VOICE.voice = vs.find(v => /^ru/i.test(v.lang) && v.localService) || vs.find(v => /^ru/i.test(v.lang)) || null; }catch(e){}
-}
-if('speechSynthesis' in window){ pickVoice(); try{ speechSynthesis.addEventListener('voiceschanged', pickVoice); }catch(e){} }
-function plain(html){ return String(html).replace(/<br\s*\/?>/gi, '. ').replace(/<[^>]+>/g, '').replace(/[«»]/g, '').replace(/\s+/g, ' ').replace(/([.!?:;,])\s*\./g, '$1').trim(); }
-function say(text){
-  if(!VOICE.on || !('speechSynthesis' in window) || !text) return;
-  try{
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(plain(text));
-    u.lang = 'ru-RU'; if(VOICE.voice) u.voice = VOICE.voice; u.rate = 1.05;
-    speechSynthesis.speak(u);
-  }catch(e){}
-}
-function speakScreen(){
-  if(S.screen==='flow'){
-    const f = FLOWS[S.flow], st = f.steps[S.step];
-    if(st.kind==='metro') return say(METRO[f.type].title + '. ' + METRO[f.type].press);
-    return say((S.step===0 ? 'Звоните 103 и громко зовите на помощь. ' : '') + st.title + '. ' + (st.list||[]).join('. ') + (st.warn ? '. ' + st.warn : ''));
-  }
-  if(S.screen==='done'){ const d = DONE[S.done]; return say(d.title + '. ' + d.list.join('. ')); }
-  if(S.screen==='who') return say('Кто без сознания? Взрослый, ребёнок или младенец?');
-  try{ speechSynthesis.cancel(); }catch(e){}
-}
 
 /* ---------- звук, метроном, таймер ---------- */
 let ctx = null, wake = null;
@@ -449,13 +435,13 @@ function metroTick(){
 function breathStart(){
   if(!M.running) return;
   M.phase='breath'; M.breathEnd = Date.now()+6000;
-  tone(440, 0.4, 250); say('Два вдоха');
+  tone(440, 0.4, 250);
   clearInterval(M.tick2); M.tick2 = setInterval(()=>{ if(Date.now()>=M.breathEnd) breathEnd(); else paintMetro(); }, 250);
   paintMetro();
 }
 function breathEnd(){
   clearInterval(M.tick2); M.phase='press'; M.count=0;
-  if(M.running){ say('Нажимайте'); M.nextAt = Date.now(); metroTick(); }
+  if(M.running){ M.nextAt = Date.now(); metroTick(); }
   paintMetro();
 }
 function paintMetro(){
@@ -502,15 +488,25 @@ function askCall(num){
   document.getElementById('sheetNum').textContent = num;
   document.getElementById('sheetTitle').textContent = num==='103' ? 'Позвонить в скорую?' : 'Позвонить в службу спасения?';
   const a = document.getElementById('sheetCall'); a.href = 'tel:' + num; a.textContent = 'Да, позвонить ' + num;
-  sheet.hidden = false; a.focus();
+  const alt = document.getElementById('sheetAlt'); alt.dataset.call = num==='103' ? '112' : '103'; alt.textContent = 'или ' + alt.dataset.call;
+  const wasHidden = sheet.hidden;
+  sheet.hidden = false;
+  // адрес определяется сразу, без лишних нажатий; свежий результат (до 2 минут) не перезапрашиваем
+  if(wasHidden){ if(LOC.at && Date.now() - LOC.at < 120000) paintLoc(); else locate(); }
 }
 function closeSheet(){ sheet.hidden = true; }
-sheet.addEventListener('click', e => { if(e.target===sheet || e.target.id==='sheetCancel') closeSheet(); });
+sheet.addEventListener('click', e => {
+  if(e.target===sheet || e.target.id==='sheetCancel') return closeSheet();
+  const b = e.target.closest('button'); if(!b) return;
+  if(b.dataset.call) askCall(b.dataset.call);
+  else if(b.dataset.a==='locate') locate();
+  else if(b.dataset.a==='copyloc') copyLoc();
+});
 document.getElementById('sheetCall').addEventListener('click', () => setTimeout(closeSheet, 300));
 document.addEventListener('keydown', e => { if(e.key==='Escape' && !sheet.hidden) closeSheet(); });
 
 /* ---------- навигация ---------- */
-function snapshot(){ return {screen:S.screen, flow:S.flow, step:S.step, done:S.done}; }
+function snapshot(){ return {screen:S.screen, flow:S.flow, step:S.step, done:S.done, who:S.who}; }
 function go(screen, extra){ S.hist.push(snapshot()); Object.assign(S, {screen}, extra||{}); afterNav(); }
 function back(){
   const prev = S.hist.pop();
@@ -536,19 +532,9 @@ function act(btn){
 }
 
 /* ---------- экраны ---------- */
-const SPK_ON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>';
-const SPK_OFF = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
-function voiceBtn(){ return '<button class="icon-btn voice-btn" data-a="voice" aria-pressed="'+VOICE.on+'" aria-label="'+(VOICE.on?'Выключить голос':'Включить голос')+'">'+(VOICE.on?SPK_ON:SPK_OFF)+'</button>'; }
 function topBar(){
   return '<div class="top"><button class="icon-btn back-btn" data-a="back" aria-label="Назад">'+I.back+'<span>Назад</span></button>' +
-    '<div style="display:flex;gap:6px;align-items:center">' + voiceBtn() +
-    '<button class="pill-103" data-a="call">' + I.phone.replace(/24/g,'18') + 'Позвонить 103</button></div></div>';
-}
-function tabs(){
-  return '<nav class="tabs" aria-label="Меню">' +
-    '<button data-a="home" class="'+(S.screen==='home'?'on':'')+'">'+I.home+'Помощь</button>' +
-    '<button data-a="list" class="'+(S.screen==='list'?'on':'')+'">'+I.list+'Все ситуации</button>' +
-    '<button data-a="callscreen" class="'+(S.screen==='call'?'on':'')+'">'+I.phone+'Вызов</button></nav>';
+    '<button class="pill-103" data-a="call">' + I.phone.replace(/24/g,'18') + 'Позвонить 103</button></div>';
 }
 function listHtml(items){ return '<ol class="do">' + items.map(x=>'<li><span>'+x+'</span></li>').join('') + '</ol>'; }
 function stepBody(st){
@@ -566,31 +552,43 @@ function buttons(list, key, st){
   return html.join('');
 }
 
+function tile(flow, icon, label, who){
+  return '<button class="tile" '+(who ? 'data-who="'+who+'"' : 'data-flow="'+flow+'"')+'>'+icon+'<span>'+label+'</span></button>';
+}
 function vHome(){
-  return '<div class="scroll" style="padding-top:14px">' +
+  return '<div class="scroll" style="padding-top:12px">' +
     '<button class="call-card" data-a="call"><div class="ring">'+I.phone.replace(/24/g,'30')+'</div><div><b>Позвонить 103</b><span>Скорая помощь</span></div></button>' +
-    '<h1 style="margin-top:6px">Что случилось?</h1>' +
-    '<button class="sit primary" data-flow="who">'+I.person+'Без сознания</button>' +
-    '<button class="sit" data-flow="bleed">'+I.drop+'Сильно кровоточит</button>' +
-    '<button class="sit" data-flow="choke">'+I.choke+'Подавился</button>' +
-    '<button class="sit" data-flow="diab">'+I.sugar+'Диабетику плохо</button>' +
-    '<button class="sit" data-flow="burn">'+I.fire+'Ожог</button>' +
-    '<button class="link-btn" data-a="list" style="color:var(--fg);font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px">Другая ситуация '+I.chev+'</button>' +
-  '</div>' + tabs();
+    '<h1 style="margin-top:4px">Что случилось?</h1>' +
+    '<button class="sit primary" data-who="cpr">'+I.person+'Без сознания</button>' +
+    '<div class="grid">' +
+      tile('bleed', I.drop, 'Сильно кровоточит') +
+      tile('', I.choke, 'Подавился', 'choke') +
+      tile('stroke', I.stroke, 'Инсульт') +
+      tile('anaph', I.syringe, 'Сильная аллергия') +
+      tile('diab', I.sugar, 'Диабетику плохо') +
+      tile('seizure', I.zap, 'Судороги') +
+      tile('burn', I.fire, 'Ожог') +
+      tile('fracture', I.bone, 'Перелом') +
+    '</div>' +
+  '</div>';
 }
-function vList(){
-  return '<div class="top"><h1>Все ситуации</h1></div><div class="scroll">' +
-    LIST.map(x => '<button class="list-item" '+(x.flow?'data-flow="'+x.flow+'"':'disabled')+'><div style="flex:1;min-width:0"><span class="t">'+x.t+'</span><span class="s">'+x.s+'</span></div>' +
-      (x.flow ? (x.urgent?'<span class="tag">Срочно</span>':'') + I.chev : '<span class="tag soon">Скоро</span>') + '</button>').join('') +
-  '</div>' + tabs();
-}
+const WHO = {
+  cpr:{ title:'Кто без сознания?', opts:[
+    {flow:'cpr', t:'Взрослый или подросток', s:'Есть признаки взросления'},
+    {flow:'cprc', t:'Ребёнок от 1 года', s:'До подросткового возраста'},
+    {flow:'cpri', t:'Младенец до 1 года', s:'Помещается на руках'}],
+    note:'Не уверены? Крупный ребёнок или подросток — <b>выбирайте взрослого</b>. Главное — начать.' },
+  choke:{ title:'Кто подавился?', opts:[
+    {flow:'choke', t:'Взрослый или ребёнок от 1 года', s:'Удары по спине и толчки в живот'},
+    {flow:'chokei', t:'Младенец до 1 года', s:'Удары по спине и толчки в грудь'}],
+    note:'<b>Не давайте воду</b>: кусок она не протолкнёт, а сама может попасть в дыхательные пути и усилить удушье.' }
+};
 function vWho(){
+  const w = WHO[S.who];
   return topBar() + '<div class="scroll" style="padding-top:10px">' + HELP_ALERT +
-    '<h1>Кто без сознания?</h1>' +
-    '<button class="sit primary" data-flow="cpr" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:2px">Взрослый или подросток<span style="font-size:14px;font-weight:600;opacity:.85">Есть признаки взросления</span></button>' +
-    '<button class="sit" data-flow="cprc" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:2px">Ребёнок от 1 года<span style="font-size:14px;font-weight:600;color:var(--muted)">До подросткового возраста</span></button>' +
-    '<button class="sit" data-flow="cpri" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:2px">Младенец до 1 года<span style="font-size:14px;font-weight:600;color:var(--muted)">Помещается на руках</span></button>' +
-    '<div class="note">Не уверены? Крупный ребёнок или подросток — <b>выбирайте взрослого</b>. Главное — начать.</div>' +
+    '<h1>'+w.title+'</h1>' +
+    w.opts.map((o,k)=>'<button class="sit'+(k===0?' primary':'')+'" data-flow="'+o.flow+'" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:2px">'+o.t+'<span style="font-size:14px;font-weight:600;'+(k===0?'opacity:.85':'color:var(--muted)')+'">'+o.s+'</span></button>').join('') +
+    '<div class="'+(S.who==='choke'?'warn':'note')+'">'+w.note+'</div>' +
   '</div>';
 }
 const METRO = {
@@ -613,8 +611,8 @@ function vFlow(){
       '<button class="big light" data-a="woke">Очнулся / задышал</button></div>' + prevBtn + '</div>';
   }
   const body = (S.step===0 ? HELP_ALERT : '') + '<span class="step-no">Шаг '+(S.step+1)+' из '+n+'</span><h1>'+st.title+'</h1>' + stepBody(st) +
-    (st.kind==='timer' ? '<div class="timer"><b id="tLeft">'+st.minutes+':00</b><button id="tBtn" class="small-btn" data-a="timer">Запустить таймер</button></div>' : '') +
-    (st.kind==='stamp' ? '<div class="timer"><b id="stampT">'+(STAMPS[S.flow]||'––:––')+'</b><button class="small-btn" data-a="stamp">'+(STAMPS[S.flow]?'Отмечено':'Отметить время')+'</button></div>' : '');
+    (st.kind==='timer' ? '<div class="timer"><div><b id="tLeft">'+st.minutes+':00</b><small>Обратный отсчёт '+st.minutes+' мин. В конце — сигнал и вибрация.</small></div><button id="tBtn" class="small-btn" data-a="timer">Запустить</button></div>' : '') +
+    (st.kind==='stamp' ? '<div class="timer"><div><b id="stampT">'+(STAMPS[S.flow]||'––:––')+'</b><small>Запоминает время на часах телефона. Это не таймер — ничего не отсчитывает.</small></div><button class="small-btn" data-a="stamp">'+(STAMPS[S.flow]?'Отмечено':'Отметить')+'</button></div>' : '');
   return head + '<div class="scroll">'+body+'</div><div class="bottom">'+buttons(st.btns,'data-btn',st)+prevBtn+'</div>';
 }
 function vDone(){
@@ -623,54 +621,29 @@ function vDone(){
     '<div class="scroll" style="padding-top:12px"><h1>'+d.title+'</h1>'+listHtml(d.list)+'</div>' +
     '<div class="bottom">' + buttons(d.btns||[], 'data-dbtn') + (d.btns && d.btns[0].go==='back' ? '' : '<button class="big light small" data-a="home">На главную</button>') + '</div>';
 }
-function vCall(){
-  const fromFlow = S.hist.some(h=>h.screen==='flow');
-  return '<div class="top"><button class="icon-btn back-btn" data-a="back" aria-label="Назад">'+I.back+'<span>Назад</span></button></div>' +
-    '<div class="scroll">' +
-    '<h1>Экстренный вызов</h1>' +
-    '<button class="num-card" data-call="103"><div><span style="font-size:15px;font-weight:600;opacity:.92">Скорая помощь</span><br><b>103</b></div><div class="call-card" style="width:auto;min-height:0;padding:0;background:transparent"><div class="ring">'+I.phone.replace(/24/g,'28')+'</div></div></button>' +
-    '<button class="num-row" data-call="112"><span>Единая служба спасения</span><b>112</b></button>' +
-    '<div class="loc"><span class="muted" style="font-size:14px;font-weight:600">Где вы находитесь</span>' +
-      '<div id="locAddr" class="addr">Нажмите «Определить адрес»</div><div id="locNear" class="near" hidden></div>' +
-      '<div id="locTip" class="warn" hidden>Без интернета улицу не найти. Назовите диспетчеру <b>номер на табличке ближайшего дома</b>, улицу и ориентиры: магазин, остановку, перекрёсток.</div>' +
-      '<div class="row"><button class="small-btn" data-a="locate">Определить адрес</button><button class="small-btn" data-a="copyloc" id="copyBtn" hidden>Скопировать</button><a class="small-btn" id="smsLink" hidden>SMS с местом</a><a class="small-btn" id="mapLink" hidden target="_blank" rel="noopener">На карте</a></div></div>' +
-    '<h2 style="margin-top:4px">Что сказать диспетчеру</h2>' +
-    '<ol class="say"><li><span>1</span>Адрес: улица, дом, подъезд, этаж</li><li><span>2</span>Что случилось и сколько пострадавших</li><li><span>3</span>Возраст, есть ли сознание и дыхание</li><li><span>4</span>Ваш номер телефона</li></ol>' +
-    '<div class="note">Не кладите трубку первым — диспетчер подскажет, что делать.</div>' +
-    '</div>' + (fromFlow ? '<div class="bottom"><button class="big dark" data-a="back">Вернуться к инструкции</button></div>' : tabs());
-}
-
 function render(){
-  const v = {home:vHome, list:vList, flow:vFlow, done:vDone, call:vCall, who:vWho}[S.screen];
+  const v = {home:vHome, flow:vFlow, done:vDone, who:vWho}[S.screen];
   app.innerHTML = v();
   if(isMetro()) paintMetro();
   if(S.screen==='flow' && FLOWS[S.flow].steps[S.step].kind==='timer') paintTimer();
-  if(S.screen==='call' && LOC.addr) paintLoc();
   const sc = app.querySelector('.scroll'); if(sc) sc.scrollTop = 0;
-  const key = S.screen + '|' + S.flow + '|' + S.step + '|' + S.done;
-  if(key !== render.last){ render.last = key; speakScreen(); }
 }
 
 app.addEventListener('click', e => {
   const t = e.target.closest('button'); if(!t) return;
-  if(t.dataset.flow==='who'){ metroReset(); S.hist=[{screen:S.screen}]; S.screen='who'; render(); return; }
+  if(t.dataset.who){ metroReset(); S.hist=[{screen:'home'}]; S.who=t.dataset.who; S.screen='who'; render(); return; }
   if(t.dataset.flow){ metroReset(); if(S.screen==='who') S.hist.push(snapshot()); else S.hist=[{screen:S.screen}]; Object.assign(S,{screen:'flow', flow:t.dataset.flow, step:0}); render(); return; }
   if(t.dataset.btn!==undefined){ act(FLOWS[S.flow].steps[S.step].btns[+t.dataset.btn]); return; }
   if(t.dataset.dbtn!==undefined){ act(DONE[S.done].btns[+t.dataset.dbtn]); return; }
   if(t.dataset.call){ askCall(t.dataset.call); return; }
   const a = t.dataset.a;
   if(a==='home') home();
-  else if(a==='list'){ S.hist=[]; S.screen='list'; render(); }
   else if(a==='call') askCall('103');
-  else if(a==='callscreen'){ S.hist=[]; S.screen='call'; render(); }
   else if(a==='back') back();
   else if(a==='metro'){ if(M.phase==='breath') breathEnd(); else (M.running ? metroStop() : metroStart()); }
   else if(a==='woke'){ const mins = M.startedAt ? Math.max(1, Math.round((Date.now()-M.startedAt)/60000)) : 0; metroStop(); lockScreen(false); go('done', {done:'woke'}); if(mins){ const h=app.querySelector('h1'); if(h) h.insertAdjacentHTML('afterend','<div class="note">Реанимация длилась около <b>'+mins+' мин</b>.</div>'); } }
   else if(a==='timer') timerStart(FLOWS[S.flow].steps[S.step].minutes);
-  else if(a==='stamp'){ const d = new Date(); STAMPS[S.flow] = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); document.getElementById('stampT').textContent = STAMPS[S.flow]; t.textContent = 'Отмечено'; say('Время отмечено: ' + STAMPS[S.flow]); }
-  else if(a==='voice'){ VOICE.on = !VOICE.on; try{ localStorage.setItem('firstaid-voice', VOICE.on ? 'on' : 'off'); }catch(e){} if(!VOICE.on){ try{ speechSynthesis.cancel(); }catch(e){} } document.querySelectorAll('.voice-btn').forEach(b => b.outerHTML = voiceBtn()); if(VOICE.on){ render.last=''; speakScreen(); } }
-  else if(a==='locate') locate();
-  else if(a==='copyloc') copyLoc();
+  else if(a==='stamp'){ const d = new Date(); STAMPS[S.flow] = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); document.getElementById('stampT').textContent = STAMPS[S.flow]; t.textContent = 'Отмечено'; }
 });
 document.addEventListener('visibilitychange', () => { if(document.visibilityState==='visible' && M.running) lockScreen(true); });
 
@@ -715,7 +688,7 @@ function locate(){
   if(!navigator.geolocation){ el.textContent = 'Телефон не поддерживает определение места. Назовите адрес по табличке на доме.'; return; }
   el.textContent = 'Определяю…';
   navigator.geolocation.getCurrentPosition(async p => {
-    LOC.lat = +p.coords.latitude.toFixed(6); LOC.lon = +p.coords.longitude.toFixed(6); LOC.acc = Math.round(p.coords.accuracy);
+    LOC.lat = +p.coords.latitude.toFixed(6); LOC.lon = +p.coords.longitude.toFixed(6); LOC.acc = Math.round(p.coords.accuracy); LOC.at = Date.now();
     LOC.addr = ''; LOC.near = []; LOC.note = ''; LOC.found = false; LOC.offline = false;
     const coords = LOC.lat + ', ' + LOC.lon;
     const useCache = () => {
