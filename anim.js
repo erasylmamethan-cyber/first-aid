@@ -16,7 +16,52 @@ const LW = 1.5;
 const st = (w=LW) => `stroke="${K.line}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"`;
 const P = (d, fill, cls='', w=LW) => `<path ${cls?`class="${cls}" `:''}d="${d}" fill="${fill}" ${st(w)}/>`;
 const Ln = (d, color=K.line, w=1.2, extra='') => `<path d="${d}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" ${extra}/>`;
-const L = (d, color, w, cls='') => `<g${cls?` class="${cls}"`:''}><path d="${d}" fill="none" stroke="${K.line}" stroke-width="${w+3}" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+/* Конечность: не «трубка», а сужающийся к кисти/стопе контур с мягкими суставами и тенью по одной стороне */
+function shadeOf(hex){
+  if(!/^#[0-9a-f]{6}$/i.test(hex)) return null;
+  const n = parseInt(hex.slice(1), 16), f = .78;
+  const r = Math.round((n>>16&255)*f), g = Math.round((n>>8&255)*f), b = Math.round((n&255)*f);
+  return '#' + ((1<<24)|(r<<16)|(g<<8)|b).toString(16).slice(1);
+}
+function limbPath(pts, w0, w1, torso=false){
+  // сглаживаем ломаную: добавляем промежуточные точки вокруг суставов
+  const P2 = [];
+  for(let i=0;i<pts.length;i++){
+    if(i>0 && i<pts.length-1){
+      const [ax,ay]=pts[i-1],[bx,by]=pts[i],[cx,cy]=pts[i+1];
+      P2.push([bx+(ax-bx)*0.18, by+(ay-by)*0.18]); P2.push([bx,by]); P2.push([bx+(cx-bx)*0.18, by+(cy-by)*0.18]);
+    } else P2.push(pts[i]);
+  }
+  const n = P2.length; let total = 0; const acc=[0];
+  for(let i=1;i<n;i++){ total += Math.hypot(P2[i][0]-P2[i-1][0], P2[i][1]-P2[i-1][1]); acc.push(total); }
+  const L1=[], R1=[], I1=[];
+  for(let i=0;i<n;i++){
+    const a = P2[Math.max(0,i-1)], b = P2[Math.min(n-1,i+1)];
+    let dx=b[0]-a[0], dy=b[1]-a[1]; const len=Math.hypot(dx,dy)||1; dx/=len; dy/=len;
+    const t = total ? acc[i]/total : 0;
+    // лёгкая «мышца» в первой трети, сужение к концу
+    const bulge = torso ? 1 + 0.16*Math.sin(Math.min(1, t/0.85)*Math.PI*0.9) : 1 + 0.10*Math.sin(Math.min(1, t/0.6)*Math.PI);
+    const hw = (w0 + (w1-w0)*t) * bulge / 2;
+    L1.push([P2[i][0]-dy*hw, P2[i][1]+dx*hw]); R1.push([P2[i][0]+dy*hw, P2[i][1]-dx*hw]);
+    I1.push([P2[i][0]+dy*hw*0.58, P2[i][1]-dx*hw*0.58]);
+  }
+  const f = v => v.toFixed(1);
+  const curve = arr => arr.map((p,i)=> i===0 ? '' : (i<arr.length-1 ? `Q${f(arr[i][0])},${f(arr[i][1])} ${f((arr[i][0]+arr[i+1][0])/2)},${f((arr[i][1]+arr[i+1][1])/2)} ` : `L${f(p[0])},${f(p[1])} `)).join('');
+  const r1 = (w1/2).toFixed(1), r0 = (w0/2).toFixed(1);
+  const Rr = R1.slice().reverse();
+  return { d: `M${f(L1[0][0])},${f(L1[0][1])} ${curve(L1)}A${r1},${r1} 0 0 0 ${f(Rr[0][0])},${f(Rr[0][1])} ${curve(Rr)}A${r0},${r0} 0 0 0 ${f(L1[0][0])},${f(L1[0][1])} Z`,
+           side: I1.slice(1, -1) };
+}
+const L = (d, color, w, cls='') => {
+  const nums = (d.match(/-?\d+(\.\d+)?/g) || []).map(Number);
+  const pts = []; for(let i=0;i+1<nums.length;i+=2) pts.push([nums[i], nums[i+1]]);
+  if(pts.length < 2) return '';
+  const torso = w >= 24;
+  const lp = torso ? limbPath(pts, w*0.92, w*0.98, true) : limbPath(pts, w*1.08, w*0.8);
+  const sh = shadeOf(color);
+  const side = (sh && lp.side.length>1) ? `<path d="M${lp.side.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' L')}" fill="none" stroke="${sh}" stroke-width="${Math.max(1.4, w*0.22).toFixed(1)}" stroke-linecap="round" stroke-linejoin="round" opacity=".55" transform="translate(0,0)"/>` : '';
+  return `<g${cls?` class="${cls}"`:''}><path d="${lp.d}" fill="${color}" stroke="${K.line}" stroke-width="${LW}" stroke-linejoin="round"/>${side}</g>`;
+};
 const C = (cx, cy, r, fill, cls='') => `<circle ${cls?`class="${cls}" `:''}cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" ${st()}/>`;
 const T = (x, y, s, size=12, fill=K.line, w=700, anchor='middle') => `<text x="${x}" y="${y}" font-size="${size}" font-weight="${w}" fill="${fill}" text-anchor="${anchor}" font-family="system-ui,-apple-system,Roboto,sans-serif" paint-order="stroke" stroke="${K.bg}" stroke-width="3">${s}</text>`;
 const DEFS = `<defs>
