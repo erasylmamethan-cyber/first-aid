@@ -102,6 +102,8 @@ ol.do b{font-weight:800}
 .metro-count{position:absolute;top:8px;left:8px;background:#C8102E;color:#fff;border-radius:14px;padding:6px 12px;display:flex;align-items:baseline;gap:6px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
 .metro-stage.breath .metro-count{background:#1D4ED8}
 .metro-stage:not(.run):not(.breath) .metro-count{background:#6B7280}
+.cd-big{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:96px;font-weight:900;color:#C8102E;background:rgba(255,255,255,.55);border-radius:16px;font-variant-numeric:tabular-nums}
+.metro-stage.cd .metro-count{background:#111827}
 .metro-count b{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
 .metro-count span{font-size:14px;font-weight:700}
 /* metronome */
@@ -399,12 +401,14 @@ const FLOWS = {
   ]},
   fracture: { name:'Перелом', steps:[
     { anim:'fracture', title:'Не двигайте и не вправляйте',
-      list:['<b>Не выпрямляйте</b>, не проверяйте, двигается ли.','Спина, шея, таз, бедро — <b>не двигайте человека</b>.'],
+      list:['<b>Не выпрямляйте</b>, поддержите как есть свёрнутой одеждой.','Спина, шея, таз, бедро — <b>не двигайте человека</b>.'],
+      warn:'Кость торчит — <b>давите вокруг раны</b>, не на кость.',
+      btns:[{label:'Перелом руки — косынка', go:'next'}, {label:'Другое — дальше', go:'when', style:'light'}], pair:true },
+    { anim:'sling', title:'Подвяжите руку косынкой',
+      list:['Рука согнута под прямым углом. Ткань — <b>под руку</b>, угол — у локтя.','Нижний конец — <b>поверх руки к плечу</b>, узел над ключицей.'],
+      note:'Каждые 10 минут нажимайте на ноготь: цвет должен вернуться <b>за 2 секунды</b>.',
       btns:[{label:'Дальше', go:'next'}] },
-    { anim:'sling', title:'Зафиксируйте как есть',
-      list:['Подложите <b>свёрнутую одежду</b>, руку подвяжите к телу.','Кость торчит — <b>давите вокруг</b> раны.'],
-      btns:[{label:'Дальше', go:'next'}] },
-    { anim:'zones-fracture', title:'Когда звонить 103',
+    { id:'when', anim:'zones-fracture', title:'Когда звонить 103',
       list:['<b>Бедро, таз, спина, шея</b>, голова.','Кость торчит, ниже травмы кожа <b>синяя, холодная</b>.'],
       btns:[{label:'Позвонить 103', go:'call', style:'red'}, {label:'Ничего из этого', go:'done:fracture', style:'light'}], pair:true }
   ]}
@@ -425,7 +429,7 @@ const DONE = {
   anaph:{ anim:'legsRaised', title:'Ждите скорую рядом', list:['<b>5 минут не лучше</b> — второй шприц в другое бедро.','Не оставляйте одного: <b>реакция может вернуться</b>.'], btns:[{label:'Перестал дышать', go:'flow:cpr:call', style:'red'}] },
   'allergy-mild':{ title:'Следите за состоянием', list:['Будьте рядом <b>30 минут</b>.','Трудно дышать, отёк губ, слабость — <b>сразу 103</b>.'], btns:[{label:'Стало хуже', go:'flow:anaph:1', style:'red'}] },
   seizure:{ title:'Звоните 103, если', list:['Приступ <b>впервые</b>, дольше 5 минут или снова.','<b>Не приходит в себя</b>, есть травма.','Беременность, диабет, приступ <b>в воде</b>.'], btns:[{label:'Позвонить 103', go:'call', style:'red'}] },
-  fracture:{ anim:'sling', title:'Обратитесь в травмпункт', list:['Езжайте, <b>не снимая фиксацию</b>.','Онемели пальцы, кожа посинела — <b>звоните 103</b>.'] },
+  fracture:{ title:'Обратитесь в травмпункт', list:['Езжайте, <b>не снимая фиксацию</b>.','Онемели пальцы, кожа посинела — <b>звоните 103</b>.'] },
   'cough-infant':{ title:'Пусть кашляет', list:['Не стучите, пока малыш <b>кашляет и плачет</b>.','<b>Перестал кашлять</b> и не дышит — сразу удары по спине.'], btns:[{label:'Перестал кашлять', go:'flow:chokei:blows', style:'red'}] },
   'choke-infant':{ title:'Дыхание восстановилось', list:['<b>Обязательно покажите малыша врачу</b> — мог остаться кусочек или есть травма.'] },
   'choke-infant-unc':{ title:'Начинайте реанимацию', list:['Малыш <b>на твёрдом</b>, звоните 103.','Предмет <b>видно</b> — достаньте. <b>Не видно — не лезьте</b>.','Начните с <b>5 вдохов</b> в рот и нос.'], btns:[{label:'Начать реанимацию младенца', go:'flow:cpri:breaths', style:'red'}] },
@@ -455,13 +459,27 @@ async function lockScreen(on){
 }
 // 110 в минуту, 30 нажатий : 2 вдоха
 const M = { running:false, count:0, phase:'press', timer:null, tick2:null, nextAt:0, breathEnd:0, bpm:110, startedAt:0 };
-function metroStart(){
+function metroStart(countdown){
   ensureAudio(); lockScreen(true);
-  clearTimeout(M.timer); clearInterval(M.tick2);
+  clearTimeout(M.timer); clearInterval(M.tick2); clearInterval(M.cdTimer);
+  M.running = true;
+  if(countdown){
+    // 3 секунды, чтобы поставить руки: 3 — 2 — 1, затем первый сигнал
+    M.phase = 'countdown'; M.cd = 3; tone(660, 0.12, 60); paintMetro();
+    M.cdTimer = setInterval(() => {
+      M.cd--;
+      if(M.cd > 0){ tone(660, 0.12, 60); paintMetro(); return; }
+      clearInterval(M.cdTimer);
+      if(!M.running) return;
+      if(!M.startedAt) M.startedAt = Date.now();
+      M.phase = 'press'; M.nextAt = Date.now(); metroTick(); paintMetro();
+    }, 1000);
+    return;
+  }
   if(!M.startedAt) M.startedAt = Date.now();
-  M.running = true; M.phase = 'press'; M.nextAt = Date.now(); metroTick(); paintMetro();
+  M.phase = 'press'; M.nextAt = Date.now(); metroTick(); paintMetro();
 }
-function metroStop(){ clearTimeout(M.timer); clearInterval(M.tick2); M.running=false; if(M.phase==='breath') M.phase='press'; paintMetro(); }
+function metroStop(){ clearTimeout(M.timer); clearInterval(M.tick2); clearInterval(M.cdTimer); M.running=false; if(M.phase==='breath' || M.phase==='countdown') M.phase='press'; paintMetro(); }
 function metroReset(){ metroStop(); M.count=0; M.phase='press'; M.startedAt=0; lockScreen(false); }
 function metroTick(){
   if(!M.running || M.phase!=='press') return;
@@ -493,9 +511,16 @@ function paintMetro(){
   el.classList.toggle('breath', breath);
   const sc = document.getElementById('metroScene'), want = (breath ? 'breath-' : 'compress-') + FLOWS[S.flow].type;
   if(sc.dataset.scene !== want){ sc.dataset.scene = want; sc.innerHTML = FA_ANIM(want); }
-  sc.classList.toggle('paused', !M.running);
+  const cd = M.phase==='countdown';
+  sc.classList.toggle('paused', !M.running || cd);
+  el.classList.toggle('cd', cd);
   const n = document.getElementById('beatN'), l = document.getElementById('beatL'), h = document.getElementById('metroHint'), tx = document.getElementById('metroText');
-  if(breath){
+  const big = document.getElementById('cdBig'); if(big){ big.hidden = !cd; big.textContent = M.cd; }
+  if(cd){
+    n.textContent = M.cd; l.textContent = 'приготовьтесь';
+    tx.innerHTML = METRO[FLOWS[S.flow].type].press;
+    h.textContent = 'Поставьте руки — старт через ' + M.cd;
+  } else if(breath){
     n.textContent = '2'; l.textContent = 'вдоха · ' + Math.max(0, Math.ceil((M.breathEnd-Date.now())/1000)) + ' с';
     tx.innerHTML = METRO[FLOWS[S.flow].type].breath;
     h.textContent = 'Сделайте 2 вдоха';
@@ -507,7 +532,8 @@ function paintMetro(){
   tx.className = 'metro-text' + (breath ? ' breath' : '');
   h.className = 'metro-hint' + (breath ? ' breath' : '');
   const b = document.getElementById('metroBtn');
-  if(breath){ b.textContent = 'Вдохи сделаны'; b.className = 'big dark'; }
+  if(cd){ b.textContent = 'Начать сразу'; b.className = 'big dark'; }
+  else if(breath){ b.textContent = 'Вдохи сделаны'; b.className = 'big dark'; }
   else { b.textContent = M.running ? 'Пауза' : 'Продолжить'; b.className = 'big ' + (M.running ? 'light' : 'red'); }
 }
 
@@ -561,7 +587,7 @@ function back(){
 function home(){ metroReset(); S.hist=[]; S.screen='home'; render(); }
 function isMetro(){ return S.screen==='flow' && FLOWS[S.flow].steps[S.step].kind==='metro'; }
 function afterNav(){
-  if(isMetro()){ if(!M.running){ M.count=0; metroStart(); } }
+  if(isMetro()){ if(!M.running){ M.count=0; metroStart(true); } }
   else metroStop();
   render();
 }
@@ -653,7 +679,7 @@ function vFlow(){
     return head + '<div class="scroll" style="overflow:hidden"><div class="metro">' +
       '<h1>'+METRO[f.type].title+'</h1>' +
       '<div id="metroText" class="metro-text" aria-live="assertive"></div>' +
-      '<div id="beat" class="metro-stage"><div id="metroScene" class="fa-anim fa-metro" aria-hidden="true"></div><div class="metro-count"><b id="beatN">0</b><span id="beatL">из 30</span></div></div>' +
+      '<div id="beat" class="metro-stage"><div id="metroScene" class="fa-anim fa-metro" aria-hidden="true"></div><div class="metro-count"><b id="beatN">0</b><span id="beatL">из 30</span></div><div id="cdBig" class="cd-big" hidden>3</div></div>' +
       '<span id="metroHint" class="metro-hint"></span></div></div>' +
       '<div class="bottom"><div class="row2"><button id="metroBtn" class="big light" data-a="metro">Пауза</button>' +
       '<button class="big light" data-a="woke">Очнулся / задышал</button></div>' + prevBtn + '</div>';
@@ -688,7 +714,7 @@ app.addEventListener('click', e => {
   if(a==='home') home();
   else if(a==='call') askCall('103');
   else if(a==='back') back();
-  else if(a==='metro'){ if(M.phase==='breath') breathEnd(); else (M.running ? metroStop() : metroStart()); }
+  else if(a==='metro'){ if(M.phase==='breath') breathEnd(); else if(M.phase==='countdown'){ clearInterval(M.cdTimer); M.phase='press'; if(!M.startedAt) M.startedAt=Date.now(); M.nextAt=Date.now(); metroTick(); paintMetro(); } else (M.running ? metroStop() : metroStart()); }
   else if(a==='woke'){ const mins = M.startedAt ? Math.max(1, Math.round((Date.now()-M.startedAt)/60000)) : 0; metroStop(); lockScreen(false); go('done', {done:'woke'}); if(mins){ const h=app.querySelector('h1'); if(h) h.insertAdjacentHTML('afterend','<div class="note">Реанимация длилась около <b>'+mins+' мин</b>.</div>'); } }
   else if(a==='timer') timerStart(FLOWS[S.flow].steps[S.step].minutes);
   else if(a==='stamp'){ const d = new Date(); STAMPS[S.flow] = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); document.getElementById('stampT').textContent = STAMPS[S.flow]; t.textContent = 'Отмечено'; }
