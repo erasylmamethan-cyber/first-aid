@@ -42,6 +42,7 @@ button,a{font:inherit}
 :focus-visible{outline:3px solid var(--calm);outline-offset:2px}
 .top{display:flex;justify-content:space-between;align-items:center;padding-block:8px 2px;min-height:50px}
 .icon-btn{width:46px;height:46px;border-radius:23px;border:0;background:transparent;color:var(--fg);display:flex;align-items:center;justify-content:center;margin-left:-10px;cursor:pointer}
+.back-btn{width:auto;height:44px;margin-left:0;padding:0 14px 0 6px;gap:2px;border-radius:22px;border:1px solid var(--line);background:var(--surface);font-size:16px;font-weight:700}
 .pill-103{border:0;background:var(--accent);color:var(--accent-ink);height:42px;padding:0 16px;border-radius:21px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;cursor:pointer}
 .scroll{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-block:8px 6px}
 .bottom{display:flex;flex-direction:column;gap:8px;padding-block:6px 12px}
@@ -175,17 +176,49 @@ const I = {
 /* Каждый шаг — указание, коротко, без прокрутки. Ключевые слова в <b>.
    go: 'next' | число (индекс шага) | 'done:<id>' | 'call' (подтверждение звонка) | 'flow:<id>:<шаг>' */
 const FLOWS = {
-  cpr: { name:'Без сознания', steps:[
+  cpr: { name:'Взрослый без сознания', type:'adult', steps:[
     { title:'Убедитесь, что вам ничего не угрожает',
-      list:['Дорога, огонь, ток, газ, обрушение — <b>сначала уберите опасность</b> или отойдите.','Помогать можно только там, где <b>безопасно вам</b>.'],
+      list:['Дорога, огонь, ток, газ — <b>сначала уберите опасность</b> или отойдите.','Помогать можно только там, где <b>безопасно вам</b>.'],
+      warn:'Упал, ДТП, удар — <b>не поднимайте и не сажайте</b>: может быть перелом позвоночника. Двигайте, только если нужно для реанимации, — <b>голову, шею и тело вместе</b>.',
       btns:[{label:'Безопасно — дальше', go:'next'}] },
     { title:'Проверьте сознание и дыхание',
       list:['Громко окликните, <b>потрясите за плечи</b>.','Нет ответа — <b>запрокиньте голову</b>, поднимите подбородок.','<b>10 секунд смотрите на грудную клетку</b>: поднимается или нет? Слушайте и ощущайте дыхание щекой.'],
       note:'Редкие хрипящие вдохи — это <b>не дыхание</b>. Пульс искать не нужно: нет нормального дыхания — значит, сердце остановилось.',
       btns:[{label:'Не дышит или хрипит', go:'next', style:'red'}, {label:'Дышит нормально', go:'done:breathing', style:'light'}] },
     { title:'Позвоните 103 и найдите дефибриллятор',
-      list:['Позвоните <b>103</b>, включите громкую связь, положите телефон рядом.','Пусть кто-нибудь <b>принесёт дефибриллятор</b> (АНД), если он есть рядом. Он сам говорит, что делать.','Положите человека <b>на спину, на твёрдое</b>.'],
-      btns:[{label:'Начать реанимацию', go:'next', style:'red'}, {label:'Позвонить 103', go:'call', style:'light'}] },
+      list:['Позвоните <b>103</b>, включите громкую связь.','Пусть кто-нибудь <b>принесёт дефибриллятор</b> (АНД), если он рядом. Он сам говорит, что делать.','Человек — <b>на спине, на твёрдом</b>. Поворачивайте голову и тело вместе.'],
+      warn:'Это женщина? <b>Не стесняйтесь</b> — промедление стоит ей жизни. Нажимать можно через одежду.',
+      btns:[{label:'Начать реанимацию', go:'next', style:'red'}, {label:'Позвонить 103', go:'call', style:'light'}], pair:true },
+    { kind:'metro' }
+  ]},
+  cprc: { name:'Ребёнок без сознания', type:'child', steps:[
+    { title:'Убедитесь, что вам ничего не угрожает',
+      list:['Дорога, огонь, ток, вода — <b>сначала уберите опасность</b>.'],
+      warn:'Упал или ударился — <b>не поднимайте</b>: может быть травма позвоночника. Двигайте <b>голову, шею и тело вместе</b>.',
+      btns:[{label:'Безопасно — дальше', go:'next'}] },
+    { title:'Проверьте сознание и дыхание',
+      list:['Громко окликните, <b>похлопайте по плечу</b>. Не трясите.','<b>Слегка запрокиньте голову</b>, поднимите подбородок.','<b>10 секунд смотрите на грудную клетку</b>: поднимается или нет?'],
+      note:'Редкие хрипящие вдохи — это <b>не дыхание</b>. Сомневаетесь — начинайте помогать.',
+      btns:[{label:'Не дышит или хрипит', go:'next', style:'red'}, {label:'Дышит нормально', go:'done:breathing', style:'light'}] },
+    { title:'Сделайте 5 вдохов',
+      list:['<b>Зажмите нос</b>, плотно обхватите ртом его рот.','<b>5 спокойных вдохов</b> по 1 секунде.','Смотрите: <b>грудь поднимается?</b> Не поднимается — поправьте голову и дуйте снова.'],
+      btns:[{label:'Сделал(а) 5 вдохов', go:'next'}] },
+    { title:'Позвоните 103',
+      list:['Позвоните <b>103</b>, включите громкую связь.','<b>Нет телефона и вы один</b> — сначала 1 минута реанимации, потом бегите звонить.','Ребёнок — <b>на спине, на твёрдом</b>.'],
+      btns:[{label:'Начать нажатия', go:'next', style:'red'}, {label:'Позвонить 103', go:'call', style:'light'}], pair:true },
+    { kind:'metro' }
+  ]},
+  cpri: { name:'Младенец без сознания', type:'infant', steps:[
+    { title:'Проверьте сознание и дыхание',
+      list:['Окликните, <b>пощекочите стопу</b>. Не трясите.','Голову держите <b>прямо, не запрокидывайте</b>. Чуть приподнимите подбородок.','<b>10 секунд смотрите на грудь и живот</b>: поднимаются или нет?'],
+      note:'Редкие хрипящие вдохи — это <b>не дыхание</b>. Сомневаетесь — начинайте помогать.',
+      btns:[{label:'Не дышит или хрипит', go:'next', style:'red'}, {label:'Дышит нормально', go:'done:breathing-infant', style:'light'}] },
+    { title:'Сделайте 5 вдохов',
+      list:['Обхватите ртом <b>одновременно рот и нос</b> малыша.','<b>5 небольших вдохов</b> по 1 секунде — объёмом с щёки, не всей грудью.','Смотрите: <b>грудь поднимается?</b>'],
+      btns:[{label:'Сделал(а) 5 вдохов', go:'next'}] },
+    { title:'Позвоните 103',
+      list:['Позвоните <b>103</b>, включите громкую связь.','<b>Нет телефона и вы один</b> — сначала 1 минута реанимации, потом звоните, взяв малыша с собой.','Малыш — <b>на спине, на твёрдом</b>: стол, пол.'],
+      btns:[{label:'Начать нажатия', go:'next', style:'red'}, {label:'Позвонить 103', go:'call', style:'light'}], pair:true },
     { kind:'metro' }
   ]},
   bleed: { name:'Сильно кровоточит', steps:[
@@ -200,7 +233,7 @@ const FLOWS = {
       list:['Старую повязку <b>не снимайте</b>.','Сверху — <b>ещё ткань</b>, снова туго прибинтуйте.','Снова <b>сильно давите</b> рукой.'],
       btns:[{label:'Кровь остановилась', go:'done:bleed'}, {label:'Рука или нога: кровь не останавливается', go:'next', style:'red'}] },
     { title:'Перетяните руку или ногу выше раны',
-      list:['<b>Это не повязка.</b> Жгут — тугая перетяжка, которая пережимает всю конечность.','Место — <b>на 5–7 см выше раны</b>, не на сустав.','Жгут, <b>ремень или полоса ткани</b> шириной от 4 см. Не верёвка и не провод.','Завяжите, вставьте <b>палку или ручку</b> и закручивайте, <b>пока кровь не остановится</b>.','<b>Запишите время</b> на коже или на жгуте.'],
+      list:['<b>Это не повязка.</b> Жгут — тугая перетяжка, которая пережимает всю конечность.','Отмерьте от раны вверх <b>4 своих сложенных пальца</b> (5–7 см). Не на сустав.','Жгут, <b>ремень или полоса ткани</b> шириной от 2–3 пальцев. Не верёвка и не провод.','Завяжите, вставьте <b>палку или ручку</b> и закручивайте, <b>пока кровь не остановится</b>.','<b>Запишите время</b> на коже или на жгуте.'],
       warn:'<b>Не ослабляйте и не снимайте</b> — это сделают врачи.',
       btns:[{label:'Перетянул(а)', go:'done:tourniquet'}] }
   ]},
@@ -248,10 +281,11 @@ const FLOWS = {
   ]}
 };
 const DONE = {
-  breathing:{ title:'Положите на бок', list:['Позвоните <b>103</b>.','Поверните <b>на бок</b>, верхнюю ногу согните в колене для упора.','Голову слегка запрокиньте, <b>рот — вниз</b>.','<b>Смотрите на грудную клетку</b> до приезда скорой. Перестал дышать — реанимация.'], btns:[{label:'Перестал дышать', go:'flow:cpr:2', style:'red'}] },
-  woke:{ title:'Человек пришёл в себя', list:['<b>Остановите нажатия.</b>','Дышит, но не отвечает — <b>положите на бок</b>.','Очнулся — <b>не давайте вставать</b>, есть и пить. Укройте, говорите с ним.','<b>Смотрите на грудную клетку</b>. Перестал дышать — снова реанимация.','Скажите врачам, <b>сколько минут</b> длилась реанимация.'], btns:[{label:'Перестал дышать — снова нажимать', go:'flow:cpr:3', style:'red'}] },
+  breathing:{ title:'Дышит — следите за дыханием', list:['Позвоните <b>103</b>.','Была травма (падение, ДТП) — <b>не двигайте</b>. Поворачивайте, только если рвота или кровь во рту, — голову, шею и тело вместе.','Травмы не было — <b>положите на бок</b>, верхнюю ногу согните в колене, рот — вниз.','<b>Смотрите на грудную клетку</b> до приезда скорой.'], btns:[{label:'Перестал дышать', go:'remetro', style:'red'}] },
+  'breathing-infant':{ title:'Дышит — держите на боку', list:['Позвоните <b>103</b>.','Держите малыша <b>на руках, на боку</b>, голова чуть ниже тела, чтобы не захлебнулся.','<b>Смотрите на грудь и живот</b> до приезда скорой.'], btns:[{label:'Перестал дышать', go:'remetro', style:'red'}] },
+  woke:{ title:'Пришёл в себя', list:['<b>Остановите нажатия.</b>','Дышит, но не отвечает — травмы не было: <b>положите на бок</b>. Была травма — не двигайте.','Очнулся — <b>не давайте вставать</b>, есть и пить. Укройте, говорите с ним.','<b>Смотрите на грудную клетку</b>. Перестал дышать — снова реанимация.','Скажите врачам, <b>сколько минут</b> длилась реанимация.'], btns:[{label:'Перестал дышать — снова нажимать', go:'remetro', style:'red'}] },
   cloth:{ title:'Нечем закрыть рану', list:['Подойдёт <b>любая ткань</b>: футболка, рубашка, шарф, полотенце, платок.','Нечем резать — <b>рвите по шву</b> или от края. Надорвите край <b>зубами или ключом</b>.','Не тратьте время: можно <b>свернуть вещь целиком</b>.','Чистота сейчас вторична. Берите <b>внутреннюю сторону</b> одежды — она чище.','Совсем ничего — <b>давите ладонью</b> прямо на рану.'], btns:[{label:'Вернуться к ране', go:'back'}] },
-  bleed:{ title:'Держите и ждите скорую', list:['Повязку <b>не снимайте</b>.','Уложите, <b>укройте</b>, чтобы не замёрз.','Побледнел, слабеет, кожа холодная — <b>поднимите ноги</b>, скажите диспетчеру.'] },
+  bleed:{ title:'Держите и ждите скорую', list:['Повязку <b>не снимайте</b>.','Лежит — <b>не поднимайте</b>. Стоит — помогите лечь. <b>Укройте</b>, чтобы не замёрз.','Побледнел, слабеет, кожа холодная — <b>поднимите ноги</b>, скажите диспетчеру.'] },
   tourniquet:{ title:'Конечность перетянута', list:['Назовите врачам <b>время</b>, когда перетянули.','Жгут <b>не ослабляйте и не снимайте</b>.','Укройте человека и ждите скорую.'] },
   cough:{ title:'Пусть кашляет', list:['По спине <b>не стучите</b>, пока кашляет.','Будьте рядом.','<b>Перестал кашлять</b> и не дышит — сразу удары по спине.'], btns:[{label:'Перестал кашлять', go:'flow:choke:1', style:'red'}] },
   choke:{ title:'Дыхание восстановилось', list:['После толчков в живот <b>обязательно покажите врачу</b> — бывают внутренние травмы.'] },
@@ -260,7 +294,7 @@ const DONE = {
   diab:{ title:'Стало лучше', list:['Дайте <b>поесть</b>, если ещё не ел.','<b>Не оставляйте одного</b> ближайший час.','Снова плохо — сладкое и <b>звоните 103</b>.'] }
 };
 const LIST = [
-  { t:'Без сознания', s:'Не дышит, остановка сердца — реанимация', flow:'cpr', urgent:true },
+  { t:'Без сознания', s:'Взрослый, ребёнок, младенец — реанимация', flow:'who', urgent:true },
   { t:'Сильно кровоточит', s:'Давление, давящая повязка, жгут', flow:'bleed', urgent:true },
   { t:'Подавился', s:'Удары по спине, толчки в живот', flow:'choke', urgent:true },
   { t:'Диабетику плохо', s:'Низкий сахар: слабость, пот, спутанность', flow:'diab', urgent:true },
@@ -332,11 +366,11 @@ function paintMetro(){
   const n = document.getElementById('beatN'), l = document.getElementById('beatL'), h = document.getElementById('metroHint'), tx = document.getElementById('metroText');
   if(breath){
     n.textContent = '2'; l.textContent = 'вдоха · ' + Math.max(0, Math.ceil((M.breathEnd-Date.now())/1000)) + ' с';
-    tx.innerHTML = 'Запрокиньте голову, зажмите нос.<br>2 вдоха рот в рот по 1 секунде.<br>Смотрите: <u>грудь поднимается?</u>';
+    tx.innerHTML = METRO[FLOWS[S.flow].type].breath;
     h.textContent = 'Сделайте 2 вдоха';
   } else {
     n.textContent = M.count; l.textContent = 'из 30';
-    tx.innerHTML = 'Основание ладони — <b>в центр груди</b>, руки прямые. Продавливайте на <b>5–6 см</b> на каждый сигнал.';
+    tx.innerHTML = METRO[FLOWS[S.flow].type].press;
     h.textContent = M.running ? (M.count>=25 ? 'Скоро 2 вдоха' : 'Нажимайте на каждый сигнал') : 'Пауза — продолжите как можно скорее';
   }
   tx.className = 'metro-text' + (breath ? ' breath' : '');
@@ -394,6 +428,7 @@ function act(btn){
   const g = btn.go;
   if(g==='call') return askCall('103');
   if(g==='back') return back();
+  if(g==='remetro'){ const f = FLOWS[S.flow] && FLOWS[S.flow].type ? S.flow : 'cpr'; return go('flow', {flow:f, step:FLOWS[f].steps.length-1}); }
   if(g==='next') return go('flow', {step:S.step+1});
   if(typeof g==='number') return go('flow', {step:g});
   if(g.startsWith('done:')) return go('done', {done:g.slice(5)});
@@ -401,8 +436,9 @@ function act(btn){
 }
 
 /* ---------- экраны ---------- */
-function topBar(left){
-  return '<div class="top">' + left + '<button class="pill-103" data-a="call">' + I.phone.replace(/24/g,'18') + 'Позвонить 103</button></div>';
+function topBar(){
+  return '<div class="top"><button class="icon-btn back-btn" data-a="back" aria-label="Назад">'+I.back+'<span>Назад</span></button>' +
+    '<button class="pill-103" data-a="call">' + I.phone.replace(/24/g,'18') + 'Позвонить 103</button></div>';
 }
 function tabs(){
   return '<nav class="tabs" aria-label="Меню">' +
@@ -430,7 +466,7 @@ function vHome(){
   return '<div class="scroll" style="padding-top:14px">' +
     '<button class="call-card" data-a="call"><div class="ring">'+I.phone.replace(/24/g,'30')+'</div><div><b>Позвонить 103</b><span>Скорая помощь</span></div></button>' +
     '<h1 style="margin-top:6px">Что случилось?</h1>' +
-    '<button class="sit primary" data-flow="cpr">'+I.person+'Без сознания</button>' +
+    '<button class="sit primary" data-flow="who">'+I.person+'Без сознания</button>' +
     '<button class="sit" data-flow="bleed">'+I.drop+'Сильно кровоточит</button>' +
     '<button class="sit" data-flow="choke">'+I.choke+'Подавился</button>' +
     '<button class="sit" data-flow="diab">'+I.sugar+'Диабетику плохо</button>' +
@@ -444,14 +480,28 @@ function vList(){
       (x.flow ? (x.urgent?'<span class="tag">Срочно</span>':'') + I.chev : '<span class="tag soon">Скоро</span>') + '</button>').join('') +
   '</div>' + tabs();
 }
+function vWho(){
+  return topBar() + '<div class="scroll" style="padding-top:10px">' + HELP_ALERT +
+    '<h1>Кто без сознания?</h1>' +
+    '<button class="sit primary" data-flow="cpr" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:2px">Взрослый или подросток<span style="font-size:14px;font-weight:600;opacity:.85">Есть признаки взросления</span></button>' +
+    '<button class="sit" data-flow="cprc" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:2px">Ребёнок от 1 года<span style="font-size:14px;font-weight:600;color:var(--muted)">До подросткового возраста</span></button>' +
+    '<button class="sit" data-flow="cpri" style="flex-direction:column;align-items:flex-start;justify-content:center;gap:2px">Младенец до 1 года<span style="font-size:14px;font-weight:600;color:var(--muted)">Помещается на руках</span></button>' +
+    '<div class="note">Не уверены? Крупный ребёнок или подросток — <b>выбирайте взрослого</b>. Главное — начать.</div>' +
+  '</div>';
+}
+const METRO = {
+  adult:{ title:'Давите на грудь в такт', press:'Основание ладони — <b>в центр груди</b>, вторая сверху, руки прямые. Продавливайте на <b>5–6 см</b> на каждый сигнал.', breath:'Запрокиньте голову, зажмите нос.<br>2 вдоха рот в рот по 1 секунде.<br>Смотрите: <u>грудь поднимается?</u>' },
+  child:{ title:'Давите на грудь в такт', press:'Основание <b>одной ладони</b> — на нижнюю половину грудины. Не хватает сил — двумя руками. Продавливайте на <b>треть груди</b> (≈5 см).', breath:'Слегка запрокиньте голову, зажмите нос.<br>2 вдоха по 1 секунде.<br>Смотрите: <u>грудь поднимается?</u>' },
+  infant:{ title:'Нажимайте двумя пальцами', press:'<b>Два пальца</b> — на нижнюю половину грудины, чуть ниже линии сосков. Продавливайте на <b>треть груди</b> (≈4 см).', breath:'Голова прямо. Обхватите ртом <b>рот и нос</b>.<br>2 небольших вдоха по 1 секунде.<br>Смотрите: <u>грудь поднимается?</u>' }
+};
 function vFlow(){
   const f = FLOWS[S.flow], st = f.steps[S.step], n = f.steps.length;
   const prog = '<div class="progress" role="img" aria-label="Шаг '+(S.step+1)+' из '+n+'">' + f.steps.map((_,k)=>'<i class="'+(k<=S.step?'on':'')+'"></i>').join('') + '</div>';
-  const head = topBar('<button class="icon-btn" data-a="home" aria-label="Закрыть">'+I.close+'</button>') + prog;
-  const prevBtn = S.hist.length && S.hist[S.hist.length-1].screen==='flow' ? '<button class="link-btn" data-a="back">← Предыдущий шаг</button>' : '';
+  const head = topBar() + prog;
+  const prevBtn = '';
   if(st.kind==='metro'){
     return head + '<div class="scroll" style="overflow:hidden"><div class="metro">' +
-      '<h1>Давите на грудь в такт</h1>' +
+      '<h1>'+METRO[f.type].title+'</h1>' +
       '<div id="metroText" class="metro-text" aria-live="assertive"></div>' +
       '<div style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center"><div id="beat" class="beat" aria-hidden="true"><b id="beatN">0</b><span id="beatL">из 30</span></div></div>' +
       '<span id="metroHint" class="metro-hint"></span></div></div>' +
@@ -464,20 +514,21 @@ function vFlow(){
 }
 function vDone(){
   const d = DONE[S.done];
-  return topBar('<button class="icon-btn" data-a="home" aria-label="Закрыть">'+I.close+'</button>') +
+  return topBar() +
     '<div class="scroll" style="padding-top:12px"><h1>'+d.title+'</h1>'+listHtml(d.list)+'</div>' +
     '<div class="bottom">' + buttons(d.btns||[], 'data-dbtn') + (d.btns && d.btns[0].go==='back' ? '' : '<button class="big light small" data-a="home">На главную</button>') + '</div>';
 }
 function vCall(){
   const fromFlow = S.hist.some(h=>h.screen==='flow');
-  return '<div class="top"><button class="icon-btn" data-a="back" aria-label="Назад">'+I.back+'</button></div>' +
+  return '<div class="top"><button class="icon-btn back-btn" data-a="back" aria-label="Назад">'+I.back+'<span>Назад</span></button></div>' +
     '<div class="scroll">' +
     '<h1>Экстренный вызов</h1>' +
     '<button class="num-card" data-call="103"><div><span style="font-size:15px;font-weight:600;opacity:.92">Скорая помощь</span><br><b>103</b></div><div class="call-card" style="width:auto;min-height:0;padding:0;background:transparent"><div class="ring">'+I.phone.replace(/24/g,'28')+'</div></div></button>' +
     '<button class="num-row" data-call="112"><span>Единая служба спасения</span><b>112</b></button>' +
     '<div class="loc"><span class="muted" style="font-size:14px;font-weight:600">Где вы находитесь</span>' +
       '<div id="locAddr" class="addr">Нажмите «Определить адрес»</div><div id="locNear" class="near" hidden></div>' +
-      '<div class="row"><button class="small-btn" data-a="locate">Определить адрес</button><button class="small-btn" data-a="copyloc" id="copyBtn" hidden>Скопировать</button><a class="small-btn" id="mapLink" hidden target="_blank" rel="noopener">На карте</a></div></div>' +
+      '<div id="locTip" class="warn" hidden>Без интернета улицу не найти. Назовите диспетчеру <b>номер на табличке ближайшего дома</b>, улицу и ориентиры: магазин, остановку, перекрёсток.</div>' +
+      '<div class="row"><button class="small-btn" data-a="locate">Определить адрес</button><button class="small-btn" data-a="copyloc" id="copyBtn" hidden>Скопировать</button><a class="small-btn" id="smsLink" hidden>SMS с местом</a><a class="small-btn" id="mapLink" hidden target="_blank" rel="noopener">На карте</a></div></div>' +
     '<h2 style="margin-top:4px">Что сказать диспетчеру</h2>' +
     '<ol class="say"><li><span>1</span>Адрес: улица, дом, подъезд, этаж</li><li><span>2</span>Что случилось и сколько пострадавших</li><li><span>3</span>Возраст, есть ли сознание и дыхание</li><li><span>4</span>Ваш номер телефона</li></ol>' +
     '<div class="note">Не кладите трубку первым — диспетчер подскажет, что делать.</div>' +
@@ -485,7 +536,7 @@ function vCall(){
 }
 
 function render(){
-  const v = {home:vHome, list:vList, flow:vFlow, done:vDone, call:vCall}[S.screen];
+  const v = {home:vHome, list:vList, flow:vFlow, done:vDone, call:vCall, who:vWho}[S.screen];
   app.innerHTML = v();
   if(isMetro()) paintMetro();
   if(S.screen==='flow' && FLOWS[S.flow].steps[S.step].kind==='timer') paintTimer();
@@ -495,7 +546,8 @@ function render(){
 
 app.addEventListener('click', e => {
   const t = e.target.closest('button'); if(!t) return;
-  if(t.dataset.flow){ metroReset(); S.hist=[{screen:'home'}]; Object.assign(S,{screen:'flow', flow:t.dataset.flow, step:0}); render(); return; }
+  if(t.dataset.flow==='who'){ metroReset(); S.hist=[{screen:S.screen}]; S.screen='who'; render(); return; }
+  if(t.dataset.flow){ metroReset(); if(S.screen==='who') S.hist.push(snapshot()); else S.hist=[{screen:S.screen}]; Object.assign(S,{screen:'flow', flow:t.dataset.flow, step:0}); render(); return; }
   if(t.dataset.btn!==undefined){ act(FLOWS[S.flow].steps[S.step].btns[+t.dataset.btn]); return; }
   if(t.dataset.dbtn!==undefined){ act(DONE[S.done].btns[+t.dataset.dbtn]); return; }
   if(t.dataset.call){ askCall(t.dataset.call); return; }
@@ -522,13 +574,32 @@ function streetLine(t){
   const house = t['addr:housenumber'] || t.house_number || '';
   return [street, house].filter(Boolean).join(', ');
 }
+/* Без интернета: GPS работает, а адреса берутся из памяти телефона — всех мест, где адрес уже определялся с интернетом */
+const CACHE_KEY = 'firstaid-addr-cache';
+function cacheRead(){ try{ return JSON.parse(localStorage.getItem(CACHE_KEY)) || []; }catch(e){ return []; } }
+function cacheSave(entry){
+  try{
+    const list = cacheRead().filter(x => dist(x.lat, x.lon, entry.lat, entry.lon) > 40);
+    list.unshift(entry); localStorage.setItem(CACHE_KEY, JSON.stringify(list.slice(0, 60)));
+  }catch(e){}
+}
+function cacheNearest(lat, lon){
+  let best = null;
+  cacheRead().forEach(x => { const d = dist(lat, lon, x.lat, x.lon); if(d <= 200 && (!best || d < best.d)) best = Object.assign({}, x, {d}); });
+  return best;
+}
 function paintLoc(){
   const a = document.getElementById('locAddr'); if(!a) return;
   a.textContent = LOC.addr || 'Адрес не найден';
   const n = document.getElementById('locNear');
-  if(LOC.near.length){ n.hidden = false; n.innerHTML = 'Рядом: ' + LOC.near.map(x=>x.t+' — '+x.d+' м').join('; '); } else n.hidden = true;
-  const c = document.getElementById('copyBtn'); if(c) c.hidden = !LOC.addr;
-  const m = document.getElementById('mapLink'); if(m && LOC.lat){ m.hidden = false; m.href = 'https://www.google.com/maps?q=' + LOC.lat + ',' + LOC.lon; }
+  const nearTxt = LOC.near.length ? 'Рядом: ' + LOC.near.map(x=>x.t+' — '+x.d+' м').join('; ') : '';
+  const extra = [nearTxt, LOC.note].filter(Boolean).join('<br>');
+  n.hidden = !extra; n.innerHTML = extra;
+  document.getElementById('locTip').hidden = !LOC.offline;
+  const c = document.getElementById('copyBtn'); if(c) c.hidden = !LOC.lat;
+  const text = 'Нужна помощь. Я здесь: ' + (LOC.found ? LOC.addr + '. ' : '') + 'Координаты: ' + LOC.lat + ', ' + LOC.lon + ' https://www.google.com/maps?q=' + LOC.lat + ',' + LOC.lon;
+  const s = document.getElementById('smsLink'); if(s && LOC.lat){ s.hidden = false; s.href = 'sms:?&body=' + encodeURIComponent(text); }
+  const m = document.getElementById('mapLink'); if(m && LOC.lat){ m.hidden = LOC.offline; m.href = 'https://www.google.com/maps?q=' + LOC.lat + ',' + LOC.lon; }
 }
 function locate(){
   const el = document.getElementById('locAddr');
@@ -536,7 +607,16 @@ function locate(){
   el.textContent = 'Определяю…';
   navigator.geolocation.getCurrentPosition(async p => {
     LOC.lat = +p.coords.latitude.toFixed(6); LOC.lon = +p.coords.longitude.toFixed(6); LOC.acc = Math.round(p.coords.accuracy);
-    LOC.addr = ''; LOC.near = [];
+    LOC.addr = ''; LOC.near = []; LOC.note = ''; LOC.found = false; LOC.offline = false;
+    const coords = LOC.lat + ', ' + LOC.lon;
+    const useCache = () => {
+      LOC.offline = true;
+      const c = cacheNearest(LOC.lat, LOC.lon);
+      if(c){ LOC.addr = c.addr; LOC.near = c.near || []; LOC.found = true; LOC.note = 'Нет интернета — адрес из памяти телефона, место в ' + c.d + ' м от вас. Сверьте с табличкой. Координаты: ' + coords; }
+      else { LOC.addr = 'Координаты: ' + coords; LOC.note = 'GPS работает без интернета — продиктуйте координаты диспетчеру.'; }
+      paintLoc();
+    };
+    if(navigator.onLine === false) return useCache();
     const e1 = document.getElementById('locAddr'); if(e1) e1.textContent = 'Ищу улицу и дом…';
     try{
       const r = await withTimeout(fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=18&accept-language=ru&lat='+LOC.lat+'&lon='+LOC.lon), 9000);
@@ -556,7 +636,9 @@ function locate(){
       }).filter(x => x.t && !seen.has(x.t) && seen.add(x.t)).sort((a,b)=>a.d-b.d).slice(0,3);
     }catch(e){}
     if(!LOC.addr && LOC.near.length) LOC.addr = LOC.near[0].t;
-    if(!LOC.addr) LOC.addr = 'Нет интернета для поиска адреса. Координаты: ' + LOC.lat + ', ' + LOC.lon;
+    if(!LOC.addr) return useCache();
+    LOC.found = true; LOC.note = 'Точность GPS ±' + LOC.acc + ' м. Сверьте с табличкой на доме.';
+    cacheSave({ lat:LOC.lat, lon:LOC.lon, addr:LOC.addr, near:LOC.near });
     paintLoc();
   }, err => {
     const e2 = document.getElementById('locAddr'); if(!e2) return;
@@ -565,7 +647,7 @@ function locate(){
 }
 function copyLoc(){
   const c = document.getElementById('copyBtn');
-  const text = LOC.addr + (LOC.lat ? ' (' + LOC.lat + ', ' + LOC.lon + ')' : '');
+  const text = (LOC.found ? LOC.addr + ' ' : '') + '(' + LOC.lat + ', ' + LOC.lon + ')';
   try{ navigator.clipboard.writeText(text).then(()=>{ if(c) c.textContent = 'Скопировано'; }, ()=>{}); }catch(e){}
 }
 
