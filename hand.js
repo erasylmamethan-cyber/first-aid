@@ -35,8 +35,8 @@ function digit(base, dir, len, w, flex, conv, o){
   const joints = [];
   for(let k=0;k<3;k++){
     cum += flex[k];
-    const fore = Math.max(0.12, Math.cos(cum*Math.PI/180));  // ракурс: согнутая фаланга короче
-    ang += conv * flex[k] * Math.PI/180;
+    const fore = o.side ? 1 : Math.max(0.12, Math.cos(cum*Math.PI/180));  // ракурс: согнутая фаланга короче
+    ang += (o.side ? flex[k] : conv * flex[k]) * Math.PI/180;
     const sl = seg[k] * fore;
     const mid = [x + Math.cos(ang)*sl*0.5, y + Math.sin(ang)*sl*0.5];
     x += Math.cos(ang)*sl; y += Math.sin(ang)*sl;
@@ -74,6 +74,19 @@ function digit(base, dir, len, w, flex, conv, o){
     }
     return `<path d="${out}" fill="none" stroke="${CREASE}" stroke-width=".85" stroke-linecap="round" opacity=".85"/>`;
   };
+  if(o.side){
+    // сбоку: складки — на тыльном крае над суставами, ноготь — тонкой пластинкой на тыльной стороне кончика
+    const back = (j, k) => { const nx = Math.sin(j.a), ny = -Math.cos(j.a), tx = Math.cos(j.a), ty = Math.sin(j.a), r = w*0.5;
+      return `M${f1(j.p[0]+nx*r-tx*2)},${f1(j.p[1]+ny*r-ty*2)} q${f1(tx*2+nx*1.6)},${f1(ty*2+ny*1.6)} ${f1(tx*4)},${f1(ty*4)}`; };
+    s += `<path d="${back(joints[0])} ${back(joints[1])}" fill="none" stroke="${CREASE}" stroke-width=".9" opacity=".8"/>`;
+    if(!o.noNails){
+      const a = joints[2].a, nx = Math.sin(a), ny = -Math.cos(a), tx = Math.cos(a), ty = Math.sin(a), r = w*0.42;
+      const p0 = [tip[0] - tx*w*0.95 + nx*r, tip[1] - ty*w*0.95 + ny*r], p1 = [tip[0] - tx*w*0.15 + nx*r*0.75, tip[1] - ty*w*0.15 + ny*r*0.75];
+      s += `<path d="M${f1(p0[0])},${f1(p0[1])} L${f1(p1[0])},${f1(p1[1])}" stroke="${NAIL}" stroke-width="2.6" stroke-linecap="round"/>` +
+           `<path d="M${f1(p0[0])},${f1(p0[1])} L${f1(p1[0])},${f1(p1[1])}" stroke="${NAILE}" stroke-width=".6" fill="none" transform="translate(${f1(nx*1.2)},${f1(ny*1.2)})"/>`;
+    }
+    return s;
+  }
   s += crease(joints[0], 3, 0.30) + crease(joints[1], 2, 0.24);
   // ноготь на дистальной фаланге: ложе, лунка, околоногтевой валик
   if(!o.noNails && joints[2].fore > 0.35){
@@ -134,5 +147,33 @@ function digit3(base, dir, len, w, flex, g, noNails){
   return digit(base, dir, len*1.08, w, [0, flex[0], flex[1]], 0, {g, noNails});
 }
 
-window.FA_HAND = { anatomicHand };
+/* o.flex — сгибание пальцев [MCP, PIP, DIP] в градусах (отрицательное — разгибание, пальцы приподняты);
+   o.thumb — показать большой палец (ближняя сторона); o.g / o.g2 — заливки */
+function sideHand(x, y, rot=0, s=1, o={}){
+  const g = o.g || 'url(#gr)', g2 = o.g2 || 'url(#gr2)';
+  const fl = [36, 40, 37.5, 30], wd = [9.2, 9.6, 9.2, 8.2];
+  const by = [-2.4, -3.2, -2.6, -1.6], bx = [49, 50.5, 49.5, 45.5];
+  const flex = o.flex || [8, 12, 8];
+  const spread = o.spread || [0, 2, 4, 6];
+  let out = `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})">`;
+  // дальние пальцы: мизинец, безымянный, средний (темнее — в тени)
+  for(const i of [3,2,1]){
+    out += digit([bx[i], by[i]], spread[i] + (o.dir||0), fl[i], wd[i], flex.map((f,k)=>f*(1+i*0.06)), 0, {g:o.gFar||'url(#grs)', side:true, noNails:true});
+  }
+  // ладонь в профиль: тыл слегка выпуклый, на ладонной стороне — подушка основания ладони (то, чем давят)
+  out += `<path d="M-1,-9 C14,-11.6 32,-11 46,-8.2 C50,-7.4 53,-5.4 53.6,-2.4 C54,0.6 53,3.4 50.6,5 C46,7.4 38,8 30,8.6 C22,9.4 16,12 11,13.6 C6,15 1,14 -1,11.6 Z" fill="${g2}" stroke="${INK}" stroke-width="1.3" stroke-linejoin="round"/>`;
+  out += `<path d="M4,12.8 C9,10.6 14,10 18,10.6" fill="none" stroke="${CREASE}" stroke-width="1" opacity=".75"/>`;   // складка у основания ладони
+  out += `<path d="M6,-9.6 C18,-11 30,-10.8 42,-9" fill="none" stroke="#FFF2E6" stroke-width="2" stroke-linecap="round" opacity=".35"/>`;
+  // ближний — указательный
+  out += digit([bx[0], by[0]], spread[0] + (o.dir||0), fl[0], wd[0], flex, 0, {g, side:true, noNails:o.noNails});
+  // костяшка указательного
+  out += `<path d="M${bx[0]-4},${by[0]-5.4} q3,-1.6 6,-0.4" fill="none" stroke="${CREASE}" stroke-width="1" opacity=".8"/>`;
+  if(o.thumb !== false){
+    // большой палец вдоль ладонной стороны указательного, слегка отведён
+    out += digit([20, 5], (o.thumbDir ?? 14) + (o.dir||0), 34, 11.4, [0, 10, 12], 0, {g, side:true, noNails:o.noNails});
+    out += `<path d="M8,4 C13,1 19,1.4 24,4.6 C20,8.6 14,10.4 9,10.6 Z" fill="${g2}" stroke="none"/>`;
+  }
+  return out + `</g>`;
+}
+window.FA_HAND = { anatomicHand, sideHand };
 })();

@@ -68,7 +68,7 @@ const DEFS = `<defs>
 <linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8D6B6"/><stop offset="1" stop-color="#E6B18C"/></linearGradient>
 <linearGradient id="gs2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#E6B18C"/><stop offset=".5" stop-color="#F8D6B6"/><stop offset="1" stop-color="#E3AC86"/></linearGradient>
 <linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9A07A"/><stop offset="1" stop-color="#B98058"/></linearGradient>
-<linearGradient id="gr2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#BE845C"/><stop offset=".55" stop-color="#DBA27C"/><stop offset="1" stop-color="#C08860"/></linearGradient>
+<linearGradient id="grs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B98058"/><stop offset="1" stop-color="#9C6744"/></linearGradient><linearGradient id="gr2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#BE845C"/><stop offset=".55" stop-color="#DBA27C"/><stop offset="1" stop-color="#C08860"/></linearGradient>
 <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE0C8"/><stop offset="1" stop-color="#EDBE9C"/></linearGradient>
 <radialGradient id="gchest" cx=".5" cy=".42" r=".62"><stop offset="0" stop-color="#F9DABD"/><stop offset=".75" stop-color="#EDBD98"/><stop offset="1" stop-color="#DCA47E"/></radialGradient>
 <radialGradient id="gbelly" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#F9D9BC"/><stop offset="1" stop-color="#E2AA84"/></radialGradient>
@@ -335,13 +335,33 @@ S.handsTop = (o={}) => {
   if(t==='child') return svg(chestTop() + target(160, 92, 9) +
     `<g class="fa-press">${forearm(118, 94, 4, 140, 34)}${dorsalHand(118, 94, 4, 0.92, {fa:[-14,-12,-10,-6]})}</g>` +
     T(292, 44, 'одна', 13, K.line, 800, 'end') + T(292, 60, 'ладонь', 13, K.line, 800, 'end') + T(292, 158, '≈ 5 см', 14, K.mark, 900, 'end'), 'Основание одной ладони на нижнюю половину грудины');
-  return svg(chestTop() + `<g class="cpr-dent"><ellipse cx="160" cy="96" rx="34" ry="14" fill="#8A5A3C" opacity=".22"/></g>` + target(160, 94, 10) +
-    `<g class="cpr-seq"><g class="cpr-push">${interlocked(152, 94, 0, 0.98)}</g></g>` +
-    `<g class="cpr-cap"><text x="160" y="160" font-size="12" font-weight="900" fill="${K.mark}" text-anchor="middle" font-family="system-ui,sans-serif" class="cpr-c1">1 · ладонь в центр груди</text>` +
-    `<text x="160" y="160" font-size="12" font-weight="900" fill="${K.mark}" text-anchor="middle" font-family="system-ui,sans-serif" class="cpr-c2">2 · вторую — сверху наискосок</text>` +
-    `<text x="160" y="160" font-size="12" font-weight="900" fill="${K.mark}" text-anchor="middle" font-family="system-ui,sans-serif" class="cpr-c3">3 · пальцы в замок</text>` +
-    `<text x="160" y="160" font-size="12" font-weight="900" fill="${K.mark}" text-anchor="middle" font-family="system-ui,sans-serif" class="cpr-c4">4 · давите прямыми руками</text></g>` +
-    T(300, 44, 'центр', 13, K.line, 800, 'end') + T(300, 60, 'груди', 13, K.line, 800, 'end') + T(300, 84, '5–6 см', 14, K.mark, 900, 'end'), 'Основание ладони в центр груди, вторая сверху наискосок, пальцы в замок');
+  // вид сбоку: грудная клетка в профиль, прямые руки сверху, кисти со стороны большого пальца
+  const H = window.FA_HAND;
+  const chest = `<g class="cprs-chest">` +
+    `<path d="M-4,170 L-4,118 C10,112 22,110 34,111 C60,112 96,110 128,108 C150,106.6 168,107 188,110 C206,112.6 222,112 240,113 C268,114.6 296,118 324,122 L324,170 Z" fill="url(#gs)" stroke="${K.line}" stroke-width="1.4" stroke-linejoin="round"/>` +
+    // шея и подбородок слева, сосок, рёберная дуга
+    `<path d="M-4,118 C2,114 6,108 8,100 C10,94 16,92 22,96 C26,100 28,106 34,111" fill="url(#gs)" stroke="${K.line}" stroke-width="1.4" stroke-linejoin="round"/>` +
+    `<path d="M194,110.6 q4,-3.4 8,0" fill="#D79A84" stroke="#B97461" stroke-width=".9"/>` +
+    `<path d="M200,124 C226,130 258,132 290,134" fill="none" stroke="#C9926C" stroke-width="1.2" opacity=".6"/>` +
+    `<path d="M40,124 C80,122 120,120 150,121" fill="none" stroke="#C9926C" stroke-width="1" opacity=".5"/>` +
+    `</g>` + `<rect x="-4" y="160" width="330" height="14" fill="#C9D3DF"/>`;
+  const farArm = L('M164,90 L170,34', 'url(#grs)', 30) + L('M170,40 L176,-16', K.rShirtS, 38);
+  const nearArm = L('M168,60 L178,10', 'url(#gr)', 30) + L('M177,16 L184,-30', K.rShirt, 38);
+  const lowerHand = `<g transform="translate(162,88.5) scale(-1.5,1.5)">${H.sideHand(0,0,0,1,{flex:[-8,-2,0], thumb:true})}</g>`;
+  const topOpen = `<g transform="translate(166,60) scale(-1.5,1.5)">${H.sideHand(0,0,0,1,{flex:[-3,0,0], thumb:true})}</g>`;
+  const topLock = `<g transform="translate(166,60) scale(-1.5,1.5)">${H.sideHand(0,0,0,1,{flex:[52,44,22], thumb:true, thumbDir:26})}</g>`;
+  const cap = (cls, txt) => `<g class="${cls}"><rect x="8" y="138" width="214" height="22" rx="11" fill="#fff" opacity=".92"/><text x="18" y="153.5" font-size="12.5" font-weight="900" fill="${K.mark}" font-family="system-ui,sans-serif">${txt}</text></g>`;
+  return svg(chest + target(150, 108, 8) +
+    `<g class="cpr-push">` +
+      `<g class="cprs-lower">${farArm}${lowerHand}</g>` +
+      `<g class="cprs-top-open">${nearArm}${topOpen}</g>` +
+      `<g class="cprs-top-lock">${nearArm}${topLock}</g>` +
+    `</g>` +
+    `<g class="cprs-lift"><path d="M66,70 v-14" stroke="${K.mark}" stroke-width="2.6" marker-end="url(#fa-ah)" fill="none"/><text x="66" y="48" font-size="11" font-weight="900" fill="${K.mark}" text-anchor="middle" font-family="system-ui,sans-serif">пальцы вверх</text></g>` +
+    T(310, 30, 'плечи —', 12, K.line, 800, 'end') + T(310, 46, 'над руками,', 12, K.line, 800, 'end') + T(310, 62, 'руки прямые', 12, K.line, 800, 'end') +
+    T(312, 150, '5–6 см', 14, K.mark, 900, 'end') +
+    `<g class="cpr-cap">${cap('cpr-c1','1 · основание ладони — на грудину')}${cap('cpr-c2','2 · вторая ладонь — сверху')}${cap('cpr-c3','3 · пальцы в замок, приподняты')}${cap('cpr-c4','4 · давите прямыми руками')}</g>`,
+    'Вид сбоку: основание ладони на грудине, вторая сверху, пальцы в замок и приподняты, руки прямые');
 };
 
 S.compress = (o={}) => {
@@ -717,9 +737,16 @@ const css = `
 .cpr-top-open{animation:cpr-top-open 8s ease-in-out infinite}
 .cpr-top-lock{animation:cpr-top-lock 8s ease-in-out infinite}
 .cpr-push{animation:cpr-push 8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.cprs-chest ~ .cpr-push,.fa-anim .cpr-push:has(.cprs-lower){animation-name:cprs-push}
 .cpr-dent{animation:cpr-dent 8s ease-in-out infinite}
 .cpr-c1{animation:cpr-c1 8s linear infinite}.cpr-c2{animation:cpr-c2 8s linear infinite}.cpr-c3{animation:cpr-c3 8s linear infinite}.cpr-c4{animation:cpr-c4 8s linear infinite}
 .fa-metro .cpr-lower,.fa-metro .cpr-top-lock{animation:none;opacity:1}.fa-metro .cpr-top-open,.fa-metro .cpr-cap{display:none}
+.cprs-lower{animation:cprs-lower 8s ease-out infinite}
+.cprs-top-open{animation:cprs-top-open 8s ease-in-out infinite}
+.cprs-top-lock{animation:cprs-top-lock 8s ease-in-out infinite}
+.cprs-lift{animation:cprs-lift 8s linear infinite}
+.cprs-chest{animation:cprs-chest 8s ease-in-out infinite;transform-box:view-box;transform-origin:160px 160px}
+svg .cprs-lower ~ .cprs-top-lock{}
 .fa-blow{animation:fa-blow 1.1s cubic-bezier(.5,0,.75,0) infinite}
 .fa-thrust{animation:fa-thrust 1.2s ease-in-out infinite}
 .fa-water{animation:fa-water .5s linear infinite}
@@ -755,6 +782,12 @@ const css = `
 @keyframes cpr-c2{0%,15%{opacity:0}17%,31%{opacity:1}33%,100%{opacity:0}}
 @keyframes cpr-c3{0%,32%{opacity:0}34%,46%{opacity:1}48%,100%{opacity:0}}
 @keyframes cpr-c4{0%,47%{opacity:0}49%,100%{opacity:1}}
+@keyframes cprs-lower{0%{opacity:0;transform:translateY(-46px)}10%,100%{opacity:1;transform:none}}
+@keyframes cprs-top-open{0%,14%{opacity:0;transform:translateY(-46px)}26%{opacity:1;transform:none}34%{opacity:1}40%,100%{opacity:0}}
+@keyframes cprs-top-lock{0%,33%{opacity:0}40%,100%{opacity:1}}
+@keyframes cprs-lift{0%,38%{opacity:0}42%,48%{opacity:1}50%,100%{opacity:0}}
+@keyframes cprs-chest{0%,48%{transform:none}52%{transform:scaleY(.86)}56%{transform:none}64%{transform:scaleY(.86)}68%{transform:none}76%{transform:scaleY(.86)}80%{transform:none}88%{transform:scaleY(.86)}92%,100%{transform:none}}
+@keyframes cprs-push{0%,48%{transform:none}52%{transform:translateY(7px)}56%{transform:none}64%{transform:translateY(7px)}68%{transform:none}76%{transform:translateY(7px)}80%{transform:none}88%{transform:translateY(7px)}92%,100%{transform:none}}
 @keyframes fa-blow{0%,25%{transform:rotate(40deg)}52%{transform:rotate(0deg)}60%{transform:rotate(-2deg)}75%{transform:rotate(0deg)}100%{transform:rotate(40deg)}}
 @keyframes fa-strike{0%,40%{transform:rotate(-22deg)}70%{transform:rotate(4deg)}100%{transform:rotate(-22deg)}}
 @keyframes fa-thrust{0%,40%{transform:translate(0,0)}60%{transform:translate(0,-9px)}100%{transform:translate(0,0)}}
@@ -766,7 +799,7 @@ const css = `
 @keyframes fa-swell{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 @keyframes fa-jerk{0%,100%{transform:translate(0,0)}25%{transform:translate(1.5px,-1px)}50%{transform:translate(-1px,1px)}75%{transform:translate(1px,1px)}}
 @keyframes fa-f3{0%{opacity:0}2%,31%{opacity:1}33.3%,100%{opacity:0}}
-@media (prefers-reduced-motion: reduce){.cpr-top-open,.cpr-c1,.cpr-c2,.cpr-c3{display:none}.cpr-lower,.cpr-top-lock,.cpr-c4{opacity:1!important}[class^="fa-"],[class*=" fa-"]{animation:none!important}.fa-wrap,.fa-film,.fa-air{opacity:1}.fa-f3{opacity:0}.fa-k2{opacity:1}}
+@media (prefers-reduced-motion: reduce){.cprs-top-open,.cprs-lift{display:none}.cprs-lower,.cprs-top-lock{opacity:1!important}.cpr-top-open,.cpr-c1,.cpr-c2,.cpr-c3{display:none}.cpr-lower,.cpr-top-lock,.cpr-c4{opacity:1!important}[class^="fa-"],[class*=" fa-"]{animation:none!important}.fa-wrap,.fa-film,.fa-air{opacity:1}.fa-f3{opacity:0}.fa-k2{opacity:1}}
 `;
 const stl = document.createElement('style'); stl.textContent = css; document.head.appendChild(stl);
 })();
