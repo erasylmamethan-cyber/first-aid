@@ -315,8 +315,8 @@ function chestTop(){
     Ln('M152,18 C134,16 110,18 82,26 M168,18 C186,16 210,18 238,26', '#C88E68', 2) +
     Ln('M160,24 L160,104', '#D3A07B', 3.4) + Ln('M160,104 L160,112', '#D3A07B', 1.8) +
     Ln('M88,86 C104,98 132,102 154,94 M232,86 C216,98 188,102 166,94', '#CF9670', 1.8) +
-    `<circle cx="110" cy="84" r="5.5" fill="#D99A86" stroke="#B9786A" stroke-width="1"/><circle cx="110" cy="84" r="2" fill="#B9786A"/>` +
-    `<circle cx="210" cy="84" r="5.5" fill="#D99A86" stroke="#B9786A" stroke-width="1"/><circle cx="210" cy="84" r="2" fill="#B9786A"/>` +
+    `<circle cx="110" cy="84" r="3.2" fill="#D9A08C" opacity=".85"/><circle cx="110" cy="84" r="1.2" fill="#BC7F6E"/>` +
+    `<circle cx="210" cy="84" r="3.2" fill="#D9A08C" opacity=".85"/><circle cx="210" cy="84" r="1.2" fill="#BC7F6E"/>` +
     Ln('M96,150 C116,128 140,114 160,112 C180,114 204,128 224,150', '#CF9670', 1.8) +
     Ln('M74,118 C80,128 84,140 86,150 M246,118 C240,128 236,140 234,150', '#D8A584', 1.2, 'opacity=".7"');
 }
@@ -341,7 +341,7 @@ S.handsTop = (o={}) => {
     `<path d="M-4,170 L-4,118 C10,112 22,110 34,111 C60,112 96,110 128,108 C150,106.6 168,107 188,110 C206,112.6 222,112 240,113 C268,114.6 296,118 324,122 L324,170 Z" fill="url(#gs)" stroke="${K.line}" stroke-width="1.4" stroke-linejoin="round"/>` +
     // шея и подбородок слева, сосок, рёберная дуга
     `<path d="M-4,118 C2,114 6,108 8,100 C10,94 16,92 22,96 C26,100 28,106 34,111" fill="url(#gs)" stroke="${K.line}" stroke-width="1.4" stroke-linejoin="round"/>` +
-    `<path d="M194,110.6 q4,-3.4 8,0" fill="#D79A84" stroke="#B97461" stroke-width=".9"/>` +
+    `<path d="M197,110.9 q1.6,-1.3 3.2,0" fill="#C98C78" stroke="none"/>` +
     `<path d="M200,124 C226,130 258,132 290,134" fill="none" stroke="#C9926C" stroke-width="1.2" opacity=".6"/>` +
     `<path d="M40,124 C80,122 120,120 150,121" fill="none" stroke="#C9926C" stroke-width="1" opacity=".5"/>` +
     `</g>` + `<rect x="-4" y="160" width="330" height="14" fill="#C9D3DF"/>`;
@@ -358,7 +358,10 @@ S.handsTop = (o={}) => {
       `<g class="cprs-top-lock">${nearArm}${topLock}</g>` +
     `</g>` +
     `<g class="cprs-lift"><path d="M66,70 v-14" stroke="${K.mark}" stroke-width="2.6" marker-end="url(#fa-ah)" fill="none"/><text x="66" y="48" font-size="11" font-weight="900" fill="${K.mark}" text-anchor="middle" font-family="system-ui,sans-serif">пальцы вверх</text></g>` +
-    T(310, 30, 'плечи —', 12, K.line, 800, 'end') + T(310, 46, 'над руками,', 12, K.line, 800, 'end') + T(310, 62, 'руки прямые', 12, K.line, 800, 'end') +
+    `<g class="inset-static"><rect x="186" y="3" width="131" height="80" rx="8" fill="#fff" stroke="${K.line}" stroke-width="1.2"/>` +
+      `<svg x="187" y="4" width="129" height="78" viewBox="60 30 200 121" preserveAspectRatio="xMidYMid slice">${chestTop()}${target(160, 94, 10)}${interlocked(152, 94, 0, 0.98)}</svg>` +
+      `<rect x="191" y="66" width="58" height="13" rx="6.5" fill="${K.line}"/><text x="220" y="75.6" font-size="8.5" font-weight="800" fill="#fff" text-anchor="middle" font-family="system-ui,sans-serif">вид сверху</text></g>` +
+    T(312, 100, 'плечи — над', 11.5, K.line, 800, 'end') + T(312, 115, 'руками, руки', 11.5, K.line, 800, 'end') + T(312, 130, 'прямые', 11.5, K.line, 800, 'end') +
     T(312, 150, '5–6 см', 14, K.mark, 900, 'end') +
     `<g class="cpr-cap">${cap('cpr-c1','1 · основание ладони — на грудину')}${cap('cpr-c2','2 · вторая ладонь — сверху')}${cap('cpr-c3','3 · пальцы в замок, приподняты')}${cap('cpr-c4','4 · давите прямыми руками')}</g>`,
     'Вид сбоку: основание ладони на грудине, вторая сверху, пальцы в замок и приподняты, руки прямые');
@@ -742,6 +745,7 @@ const css = `
 .cpr-c1{animation:cpr-c1 8s linear infinite}.cpr-c2{animation:cpr-c2 8s linear infinite}.cpr-c3{animation:cpr-c3 8s linear infinite}.cpr-c4{animation:cpr-c4 8s linear infinite}
 .fa-metro .cpr-lower,.fa-metro .cpr-top-lock{animation:none;opacity:1}.fa-metro .cpr-top-open,.fa-metro .cpr-cap{display:none}
 .cprs-lower{animation:cprs-lower 8s ease-out infinite}
+.inset-static .cpr-top-open{display:none}.inset-static .cpr-lower,.inset-static .cpr-top-lock{animation:none!important;opacity:1!important;transform:none!important}
 .cprs-top-open{animation:cprs-top-open 8s ease-in-out infinite}
 .cprs-top-lock{animation:cprs-top-lock 8s ease-in-out infinite}
 .cprs-lift{animation:cprs-lift 8s linear infinite}
