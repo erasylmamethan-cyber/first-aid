@@ -99,6 +99,7 @@ function finger(x, y, len, w, ang=0, g='url(#gr)', nail=true){
 }
 // кисть тыльной стороной вверх, пальцы вдоль +x, начало координат — середина запястья
 function dorsalHand(x, y, rot=0, s=1, o={}){
+  if(window.FA_HAND) return FA_HAND.anatomicHand(x, y, rot, s, Object.assign({}, o, o.fl ? {fl:o.fl.map(v=>v*0.88)} : {}));
   const g = o.g || 'url(#gr)', g2 = o.g2 || 'url(#gr2)';
   const fy = o.fy || [-15,-4.5,6,15.5], fl = o.fl || [42,48,45,35], fa = o.fa || [-4,0,2,7];
   const mirror = o.mirror ? ' scale(1,-1)' : '';
@@ -123,13 +124,13 @@ function forearm(x, y, rot=0, len=120, w=40, sleeve=K.rShirt){
 // верхняя наложена на тыльную сторону нижней наискосок, её пальцы обхватывают нижнюю и уходят между её пальцами
 function interlocked(x, y, rot=0, s=1, o={}){
   const ang = o.ang ?? -34;
-  return `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})">` +
-    forearm(-4, 2, 0, 150, 38, K.rShirtS) +
-    dorsalHand(0, 0, 0, 1, {fy:[-15,-4.5,6,15.5], fl:[44,50,47,37], fa:[-5,-1.5,2,6], g:'url(#gr)', g2:'url(#gr)'}) +
-    `<g opacity=".28">${Ln('M44,-12 C52,-10 56,-6 58,-2 M45,0 C52,2 56,5 58,9 M44,11 C50,13 54,16 56,19', '#5A3520', 4)}</g>` +
-    forearm(-2, 28, ang, 150, 36) +
-    dorsalHand(-2, 28, ang, 1.0, {fy:[-11,-0.5,10,19.5], fl:[33,37,35,27], fa:[16,19,22,26], noNails:true}) +
-    `</g>`;
+  const lower = `<g class="cpr-lower">` + forearm(-4, 2, 0, 150, 38, K.rShirtS) +
+    dorsalHand(0, 0, 0, 1, {curl:0, g:'url(#gr)', g2:'url(#gr2)'}) + `</g>`;
+  const topOpen = `<g class="cpr-top-open">` + forearm(-2, 30, ang, 150, 36) +
+    dorsalHand(-2, 30, ang, 1.0, {curl:0, fy:[-17,-5.6,6,17], fa:[-8,-2,4,10]}) + `</g>`;
+  const topLock = `<g class="cpr-top-lock">` + forearm(-2, 28, ang, 150, 36) +
+    dorsalHand(-2, 28, ang, 1.0, {curl:0.55, fy:[-11,-0.5,10,19.5], fa:[16,19,22,26], noNails:true}) + `</g>`;
+  return `<g transform="translate(${x},${y}) rotate(${rot}) scale(${s})">` + lower + topOpen + topLock + `</g>`;
 }
 // кулак (большой палец внутрь) + обхватывающая кисть
 function fistGrip(x, y, s=1){
@@ -334,9 +335,13 @@ S.handsTop = (o={}) => {
   if(t==='child') return svg(chestTop() + target(160, 92, 9) +
     `<g class="fa-press">${forearm(118, 94, 4, 140, 34)}${dorsalHand(118, 94, 4, 0.92, {fa:[-14,-12,-10,-6]})}</g>` +
     T(292, 44, 'одна', 13, K.line, 800, 'end') + T(292, 60, 'ладонь', 13, K.line, 800, 'end') + T(292, 158, '≈ 5 см', 14, K.mark, 900, 'end'), 'Основание одной ладони на нижнюю половину грудины');
-  return svg(chestTop() + target(160, 94, 10) +
-    `<g class="fa-press">${interlocked(152, 94, 0, 0.98)}</g>` +
-    T(300, 44, 'центр', 13, K.line, 800, 'end') + T(300, 60, 'груди', 13, K.line, 800, 'end') + T(300, 158, '5–6 см', 14, K.mark, 900, 'end'), 'Основание ладони в центр груди, вторая сверху, пальцы в замок');
+  return svg(chestTop() + `<g class="cpr-dent"><ellipse cx="160" cy="96" rx="34" ry="14" fill="#8A5A3C" opacity=".22"/></g>` + target(160, 94, 10) +
+    `<g class="cpr-seq"><g class="cpr-push">${interlocked(152, 94, 0, 0.98)}</g></g>` +
+    `<g class="cpr-cap"><text x="160" y="160" font-size="12" font-weight="900" fill="${K.mark}" text-anchor="middle" font-family="system-ui,sans-serif" class="cpr-c1">1 · ладонь в центр груди</text>` +
+    `<text x="160" y="160" font-size="12" font-weight="900" fill="${K.mark}" text-anchor="middle" font-family="system-ui,sans-serif" class="cpr-c2">2 · вторую — сверху наискосок</text>` +
+    `<text x="160" y="160" font-size="12" font-weight="900" fill="${K.mark}" text-anchor="middle" font-family="system-ui,sans-serif" class="cpr-c3">3 · пальцы в замок</text>` +
+    `<text x="160" y="160" font-size="12" font-weight="900" fill="${K.mark}" text-anchor="middle" font-family="system-ui,sans-serif" class="cpr-c4">4 · давите прямыми руками</text></g>` +
+    T(300, 44, 'центр', 13, K.line, 800, 'end') + T(300, 60, 'груди', 13, K.line, 800, 'end') + T(300, 84, '5–6 см', 14, K.mark, 900, 'end'), 'Основание ладони в центр груди, вторая сверху наискосок, пальцы в замок');
 };
 
 S.compress = (o={}) => {
@@ -708,6 +713,13 @@ const css = `
 .fa-drop{animation:fa-drop 2.4s ease-in-out infinite}
 .fa-spin{animation:fa-spin 2.4s ease-in-out infinite}
 .fa-strike{animation:fa-strike 1s ease-in infinite}
+.cpr-lower{animation:cpr-lower 8s ease-out infinite}
+.cpr-top-open{animation:cpr-top-open 8s ease-in-out infinite}
+.cpr-top-lock{animation:cpr-top-lock 8s ease-in-out infinite}
+.cpr-push{animation:cpr-push 8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.cpr-dent{animation:cpr-dent 8s ease-in-out infinite}
+.cpr-c1{animation:cpr-c1 8s linear infinite}.cpr-c2{animation:cpr-c2 8s linear infinite}.cpr-c3{animation:cpr-c3 8s linear infinite}.cpr-c4{animation:cpr-c4 8s linear infinite}
+.fa-metro .cpr-lower,.fa-metro .cpr-top-lock{animation:none;opacity:1}.fa-metro .cpr-top-open,.fa-metro .cpr-cap{display:none}
 .fa-blow{animation:fa-blow 1.1s cubic-bezier(.5,0,.75,0) infinite}
 .fa-thrust{animation:fa-thrust 1.2s ease-in-out infinite}
 .fa-water{animation:fa-water .5s linear infinite}
@@ -734,6 +746,15 @@ const css = `
 @keyframes fa-wrap{0%{opacity:0}12%,80%{opacity:1}100%{opacity:0}}
 @keyframes fa-drop{0%{transform:translateY(-30px);opacity:0}40%,85%{transform:translateY(14px);opacity:1}100%{transform:translateY(14px);opacity:0}}
 @keyframes fa-spin{0%,10%{transform:rotate(0)}60%,90%{transform:rotate(360deg)}100%{transform:rotate(360deg)}}
+@keyframes cpr-lower{0%{opacity:0;transform:translate(-14px,-18px)}8%,100%{opacity:1;transform:none}}
+@keyframes cpr-top-open{0%,10%{opacity:0;transform:translate(-30px,30px)}22%{opacity:1;transform:translate(-8px,8px)}30%{opacity:1;transform:none}36%,100%{opacity:0;transform:none}}
+@keyframes cpr-top-lock{0%,30%{opacity:0}38%,100%{opacity:1}}
+@keyframes cpr-push{0%,48%{transform:none}52%{transform:translate(0,2px) scale(.965)}56%{transform:none}64%{transform:translate(0,2px) scale(.965)}68%{transform:none}76%{transform:translate(0,2px) scale(.965)}80%{transform:none}88%{transform:translate(0,2px) scale(.965)}92%,100%{transform:none}}
+@keyframes cpr-dent{0%,48%{opacity:0}52%{opacity:1}56%{opacity:0}64%{opacity:1}68%{opacity:0}76%{opacity:1}80%{opacity:0}88%{opacity:1}92%,100%{opacity:0}}
+@keyframes cpr-c1{0%,14%{opacity:1}16%,100%{opacity:0}}
+@keyframes cpr-c2{0%,15%{opacity:0}17%,31%{opacity:1}33%,100%{opacity:0}}
+@keyframes cpr-c3{0%,32%{opacity:0}34%,46%{opacity:1}48%,100%{opacity:0}}
+@keyframes cpr-c4{0%,47%{opacity:0}49%,100%{opacity:1}}
 @keyframes fa-blow{0%,25%{transform:rotate(40deg)}52%{transform:rotate(0deg)}60%{transform:rotate(-2deg)}75%{transform:rotate(0deg)}100%{transform:rotate(40deg)}}
 @keyframes fa-strike{0%,40%{transform:rotate(-22deg)}70%{transform:rotate(4deg)}100%{transform:rotate(-22deg)}}
 @keyframes fa-thrust{0%,40%{transform:translate(0,0)}60%{transform:translate(0,-9px)}100%{transform:translate(0,0)}}
@@ -745,7 +766,7 @@ const css = `
 @keyframes fa-swell{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
 @keyframes fa-jerk{0%,100%{transform:translate(0,0)}25%{transform:translate(1.5px,-1px)}50%{transform:translate(-1px,1px)}75%{transform:translate(1px,1px)}}
 @keyframes fa-f3{0%{opacity:0}2%,31%{opacity:1}33.3%,100%{opacity:0}}
-@media (prefers-reduced-motion: reduce){[class^="fa-"],[class*=" fa-"]{animation:none!important}.fa-wrap,.fa-film,.fa-air{opacity:1}.fa-f3{opacity:0}.fa-k2{opacity:1}}
+@media (prefers-reduced-motion: reduce){.cpr-top-open,.cpr-c1,.cpr-c2,.cpr-c3{display:none}.cpr-lower,.cpr-top-lock,.cpr-c4{opacity:1!important}[class^="fa-"],[class*=" fa-"]{animation:none!important}.fa-wrap,.fa-film,.fa-air{opacity:1}.fa-f3{opacity:0}.fa-k2{opacity:1}}
 `;
 const stl = document.createElement('style'); stl.textContent = css; document.head.appendChild(stl);
 })();
